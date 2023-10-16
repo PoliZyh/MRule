@@ -1,6 +1,6 @@
 <template>
     <div>
-        layout
+        docs
     </div>
 </template>
 

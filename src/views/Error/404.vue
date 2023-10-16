@@ -1,6 +1,6 @@
 <template>
     <div>
-        User
+        404
     </div>
 </template>
 
