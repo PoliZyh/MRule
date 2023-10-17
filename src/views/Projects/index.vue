@@ -3,7 +3,7 @@
         <h2>我的项目</h2>
         <div class="list">
             <ProjectCard v-for="i in 5" :key="i"></ProjectCard>
-            <EmptyCard></EmptyCard>
+            <EmptyCard @click="router.push('/rule/workstand')"></EmptyCard>
         </div>
     </div>
 </template>
@@ -11,6 +11,9 @@
 <script setup>
 import ProjectCard from './components/ProjectCard.vue'
 import EmptyCard from './components/EmptyCard.vue';
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 </script>
 

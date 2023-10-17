@@ -64,7 +64,7 @@ const handleRouter = (routeItem, index) => {
         display: flex;
         justify-content: center;
         align-items: center;
-        background: linear-gradient(to right, rgba(21, 157, 255, 0.526), white);
+        background: linear-gradient(to left, rgba(21, 157, 255, 0.526), white);
         img {
             width: 200px;
             height: 100px;
