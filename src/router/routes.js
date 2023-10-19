@@ -65,6 +65,16 @@ export const constantRoutes = [
                 path: 'rule-editor',
                 name: 'RuleEditor',
                 component: () => import('@/views/RuleEditor/index.vue')
+            },
+            {
+                path: 'decision-set',
+                name: 'DecisionSet',
+                component: () => import('@/views/DecisionSet/index.vue')
+            },
+            {
+                path: 'library',
+                name: 'Library',
+                component: () => import('@/views/Library/index.vue')
             }
         ]
     },

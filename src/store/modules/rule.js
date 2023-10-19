@@ -48,6 +48,18 @@ export default {
                     label: '规则设计',
                     routePath: '/rule/rule-editor',
                     iconName: 'Document'
+                },
+                {
+                    key: '2-2',
+                    label: '库',
+                    routePath: '/rule/library',
+                    iconName: 'FolderOpened'
+                },
+                {
+                    key: '2-3',
+                    label: '决策集',
+                    routePath: '/rule/decision-set',
+                    iconName: 'DocumentCopy'
                 }
             ]
         ],

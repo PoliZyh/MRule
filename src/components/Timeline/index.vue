@@ -6,6 +6,7 @@
             <el-collapse-item v-for="item in props.data" :key="item.date" :name="item.date">
                 <template #title>
                     <h4 class="date">{{ item.date }}</h4>
+                    <el-icon class="l-iconbox"><Link /></el-icon>
                 </template>
                 <el-timeline>
                     <el-timeline-item :timestamp="det.time" placement="top" v-for="det in item.more" :key="det.time">
@@ -36,11 +37,18 @@ const props = defineProps({
 
 <style scoped lang="scss">
 .timeline-box {
+    position: relative;
     .date {
         background-color: rgba(228, 228, 228, 0.641);
         padding: 0px 10px;
         width: fit-content;
         border-radius: 4px;
+    }
+    .l-iconbox {
+        position: absolute;
+        z-index: 300;
+        font-size: 18px;
+        left: -10px;
     }
 }
 </style>
