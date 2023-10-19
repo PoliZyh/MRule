@@ -4,7 +4,7 @@
         <div class="tree-row" 
         v-for="item in nodesData" 
         :key="item.name" 
-        @click="handleActive(item, $event)"
+        @click="handleActive(item, _, $event)"
         >
             <div class="tree-detial">
                 <el-icon 
@@ -48,13 +48,12 @@ const handleOpenFolder = (item) => {
     }
 }
 
-const handleActive = (item, e) => {
+const handleActive = (item, isFirst = true, e) => {
     if (e) {
         e.stopPropagation()
     }
-    
-    emits('changeActiveNode', item)
-    if (item.type === 'folder' && !item.hasOpen) {
+    emits('changeActiveNode', item, false)
+    if (item.type === 'folder' && isFirst) {
         handleOpenFolder(item)
     }
 }
