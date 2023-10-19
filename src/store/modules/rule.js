@@ -72,6 +72,15 @@ export default {
         // 设置历史记录
         setHistoryKey(state, key) {
             state.historyRouteKeySet.add(key)
+        },
+
+        deleteHistoryKey(state, key) {
+            if (state.historyRouteKeySet.size <= 1) return
+            state.historyRouteKeySet.delete(key)
+            if (state.activeKey === key) {
+                state.activeKey = '1-1'
+            }
+            
         }
 
         

@@ -18,6 +18,7 @@
     height: 100%;
     padding: 20px;
     overflow: scroll;
+    background-color: #f7f8fa;
 }
 
 .fade-enter-from {
