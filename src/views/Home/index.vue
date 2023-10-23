@@ -53,11 +53,17 @@
 <script setup>
 import BIRDS from 'vanta/dist/vanta.birds.min'
 import lax from 'lax.js'
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, onBeforeUnmount } from 'vue';
 
 const screenRef = ref()
 const vantaEffect = ref('')
 const scrollScreenProjectCenterRef = ref()
+
+onBeforeUnmount(() => {
+    if(vantaEffect.value) {
+        vantaEffect.value.destroy()
+    }
+})
 
 onMounted(() => {
     // 大屏
