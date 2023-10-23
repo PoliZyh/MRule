@@ -22,16 +22,45 @@
                 </div>
             </div>
         </div>
+        <div class="scroll-screen project-center" ref="scrollScreenProjectCenterRef">
+            <div class="sticky-screen">
+                <div class="b-s-title">
+                    <h4>产品中心</h4>
+                </div>
+                <div class="b-cards">
+                    <div class="b-card card1">
+                        <div class="img-box"></div>
+                        <p>文字</p>
+                    </div>
+                    <div class="b-card card2">
+                        <div class="img-box"></div>
+                        <p>文字</p>
+                    </div>
+                    <div class="b-card card3">
+                        <div class="img-box"></div>
+                        <p>文字</p>
+                    </div>
+                    <div class="b-card card4">
+                        <div class="img-box"></div>
+                        <p>文字</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
 import BIRDS from 'vanta/dist/vanta.birds.min'
+import lax from 'lax.js'
 import { onMounted, ref } from 'vue';
 
 const screenRef = ref()
 const vantaEffect = ref('')
+const scrollScreenProjectCenterRef = ref()
+
 onMounted(() => {
+    // 大屏
     vantaEffect.value = BIRDS({
         el: screenRef.value,
         mouseControls: true,
@@ -42,6 +71,61 @@ onMounted(() => {
         scale: 1.00,
         scaleMobile: 1.00,
         birdSize: 0.50
+    })
+    // lax
+    const projectCenterToTop = scrollScreenProjectCenterRef.value.getBoundingClientRect().top
+    lax.init();
+    lax.addDriver('scrollY', function () {
+        return window.scrollY;
+    })
+
+    lax.addElements('.card1', {
+        scrollY: {
+            opacity: [
+                [projectCenterToTop - 300, projectCenterToTop],
+                [0, 1]
+            ],
+            translateY: [
+                [projectCenterToTop - 300, projectCenterToTop],
+                [100, 0]
+            ],
+        }
+    })
+    lax.addElements('.card2', {
+        scrollY: {
+            opacity: [
+                [projectCenterToTop - 200, projectCenterToTop + 100],
+                [0, 1]
+            ],
+            translateY: [
+                [projectCenterToTop - 200, projectCenterToTop + 100],
+                [100, 0]
+            ]
+        }
+    })
+    lax.addElements('.card3', {
+        scrollY: {
+            opacity: [
+                [projectCenterToTop - 100, projectCenterToTop + 200],
+                [0, 1]
+            ],
+            translateY: [
+                [projectCenterToTop - 100, projectCenterToTop + 200],
+                [100, 0]
+            ]
+        }
+    })
+    lax.addElements('.card4', {
+        scrollY: {
+            opacity: [
+                [projectCenterToTop, projectCenterToTop + 300],
+                [0, 1]
+            ],
+            translateY: [
+                [projectCenterToTop, projectCenterToTop + 300],
+                [100, 0]
+            ]
+        }
     })
 })
 
@@ -140,6 +224,66 @@ onMounted(() => {
                 }
             }
         }
+    }
+    .scroll-screen {
+        height: 300vh;
+        .sticky-screen {
+            height: 100vh;
+            position: sticky;
+            padding: 50px 20px;
+            top: 0;
+            .b-s-title {
+                width: 100%;
+                font-size: 1.6rem;
+                position: relative;
+                display: flex;
+                justify-content: center;
+                h4 {
+                    width: fit-content;
+                    text-align: center;
+                    position: relative;
+                }
+                h4::after {
+                    content: '';
+                    position: absolute;
+                    top: 110%;
+                    left: 0;
+                    height: 4px;
+                    width: 100%;
+                    border-radius: 3px;
+                    background-color: $theme-c-blue;
+                }
+            }
+            .b-cards {
+                margin-top: 120px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                .b-card {
+                    width: 300px;
+                    height: 400px;
+                    border-radius: 15px;
+                    border: 1px solid rgb(239, 239, 239);
+                    box-shadow: 0 0 20px 0px rgb(223, 223, 223);
+                    padding: 15px;
+                    opacity: 0;
+                    .img-box {
+                        width: 100%;
+                        height: 40%;
+                        background-color: rgb(193, 193, 193);
+                        border-radius: 10px;
+                    }
+                    p {
+                        margin-top: 15px;
+                    }
+                }
+            }
+        }
+     
+
+    }
+    .project-center {
+        height: 200vh !important;
     }
 }
 </style>
