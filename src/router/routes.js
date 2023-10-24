@@ -31,6 +31,11 @@ export const constantRoutes = [
         component: () => import('@/views/Login/index.vue')
     },
     {
+        path: '/big-screen',
+        name: 'BigScreen',
+        component: () => import('@/views/BigScreen/index.vue')
+    },
+    {
         path: '/rule',
         name: 'Rule',
         component: () => import('@/layout/RuleLayout/index.vue'),

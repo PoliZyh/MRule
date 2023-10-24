@@ -11,9 +11,10 @@
                 <el-table-column prop="ruleName" label="规则名" width="180" />
                 <el-table-column prop="createTime" label="创建时间" width="145" />
                 <el-table-column prop="updateTime" label="更新时间" width="145" />
-                <el-table-column label="操作" width="180">
+                <el-table-column label="操作" width="220" fixed="right">
                     <template #="{ row }">
                         <el-button size="small">启用</el-button>
+                        <el-button size="small">历史</el-button>
                         <el-button size="small">删除</el-button>
                     </template>
                 </el-table-column>

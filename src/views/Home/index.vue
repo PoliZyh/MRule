@@ -5,6 +5,7 @@
                 <img src="../../assets/images/logo.png" alt="">
                 <ul>
                     <li>首页</li>
+                    <li @click="router.push('/big-screen')">数据大屏</li>
                     <li>产品中心</li>
                     <li>历史版本</li>
                 </ul>
@@ -54,10 +55,12 @@
 import BIRDS from 'vanta/dist/vanta.birds.min'
 import lax from 'lax.js'
 import { onMounted, ref, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
 
 const screenRef = ref()
 const vantaEffect = ref('')
 const scrollScreenProjectCenterRef = ref()
+const router = useRouter()
 
 onBeforeUnmount(() => {
     if(vantaEffect.value) {
