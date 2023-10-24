@@ -20,6 +20,7 @@
 import Menu from './components/Menu.vue';
 import Breadcrumb from './components/Breadcrumb.vue';
 import Main from './components/Main.vue'
+
 </script>
 
 <style scoped lang="scss">

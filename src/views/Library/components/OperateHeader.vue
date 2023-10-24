@@ -1,8 +1,14 @@
 <template>
     <div class="operate-header-box">
-        <el-button class="ops-h-item" @click="handleAddLibrary"><el-icon style="margin-right: 5px;"><Plus /></el-icon>新增</el-button>
-        <el-button class="ops-h-item"><el-icon style="margin-right: 5px;"><Edit /></el-icon>编辑</el-button>
-        <el-button class="ops-h-item"><el-icon style="margin-right: 5px;"><Delete /></el-icon>删除</el-button>
+        <el-button class="ops-h-item" @click="handleAddLibrary" icon="Plus">
+            新增
+        </el-button>
+        <el-button class="ops-h-item" icon="Edit">
+            编辑
+        </el-button>
+        <el-button class="ops-h-item" icon="Delete">
+            删除
+        </el-button>
     </div>
 </template>
 

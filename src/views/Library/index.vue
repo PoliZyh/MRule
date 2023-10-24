@@ -1,20 +1,18 @@
 <template>
     <div class="library-page">
         <div class="lp-left">
-            <template v-if="activeNode && activeNode.type=== 'file'">
+            <template v-if="activeNode && activeNode.type === 'file'">
                 <div class="ops-header">
                     <OperateHeader @add-library="handleAddLibrary"></OperateHeader>
                 </div>
-                <div class="lp-table" >
-                    <el-table 
-                    :data="tableData" 
-                    highlight-current-row
-                    @current-change="handleCurrentChange">
+                <div class="lp-table">
+                    <el-table :data="tableData" highlight-current-row @current-change="handleCurrentChange">
                         <el-table-column prop="type" label="类型" width="140"></el-table-column>
                         <el-table-column prop="name" label="名称" width="143"></el-table-column>
                         <el-table-column prop="desc" label="描述" width="220" show-overflow-tooltip></el-table-column>
                         <el-table-column prop="dataType" label="数据类型" width="150"></el-table-column>
-                        <el-table-column prop="defaultValue" label="默认值" width="150" show-overflow-tooltip></el-table-column>
+                        <el-table-column prop="defaultValue" label="默认值" width="150"
+                            show-overflow-tooltip></el-table-column>
                     </el-table>
                 </div>
             </template>
@@ -25,53 +23,39 @@
         <div class="lp-right">
             <FileTress :data="data" v-model:active-node="activeNode"></FileTress>
         </div>
+        <el-dialog v-model="isShowDialog" title="新增" width="40%">
+            <el-form label-width="70px" label-position="right">
+                <el-form-item label="类型">
+                    <el-select v-model="dialogParams.typeSelection" placeholder="请选择类型">
+                        <el-option v-for="item in typeSelection" :key="item.value" :label="item.type" :value="item.value" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="名称">
+                    <el-input placeholder="请输入名称" style="width: 50%;"></el-input>
+                </el-form-item>
+                <el-form-item label="描述">
+                    <el-input :autosize="{ minRows: 3 }" type="textarea" placeholder="请输入描述"></el-input>
+                </el-form-item>
+                <el-form-item label="数据类型">
+                    <el-select v-model="dialogParams.dataTypeSelection" placeholder="请选择数据类型">
+                        <el-option v-for="item in dataTypeSelection" :key="item.value" :label="item.type"
+                            :value="item.value" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="默认值">
+                    <el-input placeholder="请输入默认值" style="width: 50%;"></el-input>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="hadnleCloseDialog">取消</el-button>
+                    <el-button type="primary" @click="handleConfirmDialog">
+                        确认
+                    </el-button>
+                </span>
+            </template>
+        </el-dialog>
     </div>
-
-    <el-dialog
-        v-model="isShowDialog"
-        title="新增"
-        width="40%"
-    >
-        <el-form label-width="70px" label-position="right">
-            <el-form-item label="类型">
-                <el-select v-model="dialogParams.typeSelection" placeholder="请选择类型" >
-                    <el-option
-                    v-for="item in typeSelection"
-                    :key="item.value"
-                    :label="item.type"
-                    :value="item.value"
-                    />
-                </el-select>
-            </el-form-item>
-            <el-form-item label="名称">
-                <el-input placeholder="请输入名称" style="width: 50%;"></el-input>
-            </el-form-item>
-            <el-form-item label="描述">
-                <el-input :autosize="{ minRows: 3 }" type="textarea" placeholder="请输入描述"></el-input>
-            </el-form-item>
-            <el-form-item label="数据类型">
-                <el-select v-model="dialogParams.dataTypeSelection" placeholder="请选择数据类型" >
-                    <el-option
-                    v-for="item in dataTypeSelection"
-                    :key="item.value"
-                    :label="item.type"
-                    :value="item.value"
-                    />
-                </el-select>
-            </el-form-item>
-            <el-form-item label="默认值">
-                <el-input placeholder="请输入默认值" style="width: 50%;"></el-input>
-            </el-form-item>
-        </el-form>
-        <template #footer>
-        <span class="dialog-footer">
-            <el-button @click="hadnleCloseDialog">取消</el-button>
-            <el-button type="primary" @click="handleConfirmDialog">
-            确认
-            </el-button>
-        </span>
-        </template>
-    </el-dialog>
 </template>
 
 
@@ -204,11 +188,14 @@ const handleConfirmDialog = () => {
     width: 100%;
     height: 100%;
     display: flex;
+
     .lp-left {
         width: 75%;
+
         .ops-header {
             width: 98%;
         }
+
         .lp-table {
             width: 98%;
             margin-top: 10px;
@@ -217,6 +204,7 @@ const handleConfirmDialog = () => {
             box-shadow: 0 0 10px 0px rgb(222, 222, 222);
         }
     }
+
     .lp-right {
         width: 25%;
         border-left: 1px solid rgb(217, 217, 217);
