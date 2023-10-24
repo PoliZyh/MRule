@@ -1,6 +1,5 @@
 <template>
     <div class="menu-box">
-        
         <div class="top">
             <img src="../../../assets/images/user.jpeg" alt="">
             <div class="user">
@@ -57,6 +56,7 @@ const handleRouter = (menuItem) => {
     height: 100%;
     width: $rule-layout-menu-width;
     padding: 40px 10px;
+    
     
     .top {
         display: flex;

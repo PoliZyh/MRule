@@ -1,7 +1,7 @@
 <template>
     <div class="tree-context-menu-box" v-show="isShow" :style="style">
-        <div class="ctx-item" @click="handleCreateFolder('文件夹')" v-show="activeNode.type === 'folder'">新建文件夹</div>
-        <div class="ctx-item" @click="handleCreateFile('文件')" v-show="activeNode.type === 'folder'">新建文件</div>
+        <div class="ctx-item" @click="handleCreateFolder('文件夹')" v-show="activeNode.type === 'folder' || !activeNode">新建文件夹</div>
+        <div class="ctx-item" @click="handleCreateFile('文件')" v-show="activeNode.type === 'folder' || !activeNode">新建文件</div>
         <div class="ctx-item" @click="handleDelete()" >删除</div>
     </div>
     <el-dialog v-model="isShowDialog" :title="'创建' + dialogTitle">
@@ -34,7 +34,6 @@ const props = defineProps({
     },
     activeNode: {
         default: () => ({ 
-            'type': 'folder'
         })
     }
 })
@@ -75,10 +74,11 @@ const handleDelete = () => {
 
     .ctx-item {
         width: 100%;
-        padding: 5px 10px;
+        padding: 7px 10px;
         border-radius: 5px;
         text-align: center;
         cursor: pointer;
+        font-size: 0.8rem;
     }
     .ctx-item:hover {
         opacity: 0.5;
