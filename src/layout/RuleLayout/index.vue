@@ -13,6 +13,7 @@
                 </div>
             </div>
         </div>
+        <AIHelper />
     </div>
 </template>
 
@@ -20,7 +21,7 @@
 import Menu from './components/Menu.vue';
 import Breadcrumb from './components/Breadcrumb.vue';
 import Main from './components/Main.vue'
-
+import AIHelper from '@/components/AIHelper/index.vue'
 </script>
 
 <style scoped lang="scss">
