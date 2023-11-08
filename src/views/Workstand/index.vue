@@ -5,12 +5,12 @@
                 <Card>
                     <template v-slot:header>
                         <p class="item-p">
-                            <span class="item-num">12</span>
+                            <span class="item-num">{{ workstandData.pkgNum }}</span>
                             知识包
                         </p>
                     </template>
                     <template v-slot:content>
-                        <WaterBall></WaterBall>
+                        <WaterBall :pkgNum="workstandData.pkgNum"></WaterBall>
                     </template>
                 </Card>
             </div>
@@ -18,12 +18,14 @@
                 <Card>
                     <template v-slot:header>
                         <p class="item-p">
-                            <span class="item-num">3</span>
+                            <span class="item-num">
+                                {{ workstandData.lastFourSubmissions ? workstandData.lastFourSubmissions.length : 0}}
+                            </span>
                             规则文件
                         </p>
                     </template>
                     <template v-slot:content>
-                        <SubmitList></SubmitList>
+                        <SubmitList :info="workstandData.lastFourSubmissions"></SubmitList>
                     </template>
                 </Card>
             </div>
@@ -31,12 +33,12 @@
                 <Card>
                     <template v-slot:header>
                         <p class="item-p">
-                            <span class="item-num">7</span>
+                            <span class="item-num">4</span>
                             批处理
                         </p>
                     </template>
                     <template v-slot:content>
-                        <PictorialBar></PictorialBar>
+                        <PictorialBar ></PictorialBar>
                     </template>
                 </Card>
             </div>
@@ -53,7 +55,7 @@
                         </div>
                     </template>
                     <template v-slot:content>
-                        <TeamSubmitList></TeamSubmitList>
+                        <TeamSubmitList :info="workstandData.teamSubmissionVolume"></TeamSubmitList>
                     </template>
                 </Card>
             </div>
@@ -83,6 +85,30 @@ import SubmitList from './components/SubmitList.vue';
 import PictorialBar from './components/PictorialBar.vue';
 import TeamSubmitList from './components/TeamSubmitList.vue';
 import HeatMap from './components/HeatMap.vue';
+import { onMounted, ref } from 'vue';
+import api from '../../api';
+import { useStore } from 'vuex';
+
+const workstandData = ref({})
+const store = useStore()
+const projectId = store.state.project.projectId
+
+const getWorkstandData = async () => {
+    console.log(projectId)
+    try {
+        const res = await api.getWorkplaceDataRequest({
+            projectId: projectId
+        })
+        if (res.code === 200) {
+            workstandData.value = res.data
+        }
+    } catch {}
+}
+
+onMounted(() => {
+    getWorkstandData()
+})
+
 </script>
 
 <style scoped lang="scss">

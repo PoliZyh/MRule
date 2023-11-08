@@ -1,7 +1,7 @@
 <template>
     <div class="empty-card-box">
         <span class="add"></span>
-        <span>添加团队</span>
+        <span>添加项目</span>
     </div>
 </template>
 

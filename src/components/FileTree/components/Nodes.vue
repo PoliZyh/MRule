@@ -3,12 +3,12 @@
     <template v-if="nodesData.length > 0">
         <div class="tree-row" 
         v-for="item in nodesData" 
-        :key="item.name" 
+        :key="item.fileName" 
         @click="handleActive(item, _, $event)"
         >
             <div class="tree-detial">
                 <el-icon 
-                v-if="item.type === 'folder'" 
+                v-if="item.isFolder" 
                 class="folder-open"
                 :class="{'tree-active': item === props.activeNode}">
                     <component 
@@ -18,12 +18,12 @@
                 <el-icon 
                 style="margin-left: 5px;"
                 :class="{'tree-active': item === props.activeNode}">
-                    <component :is="item.type === 'folder' ? 'Folder' : 'Document'"></component>
+                    <component :is="item.isFolder ? 'Folder' : 'Document'"></component>
                 </el-icon>
                 <span 
                 style="margin-left: 7px;"
                 :class="{'tree-active': item === props.activeNode}"
-                >{{ item.name }}</span>
+                >{{ item.fileName }}</span>
             </div>
             <template v-if="item.children && item.children.length > 0 && item.hasOpen">
                 <Nodes :nodes-data="item.children" @change-active-node="handleActive" :active-node="props.activeNode"></Nodes>
@@ -53,7 +53,7 @@ const handleActive = (item, isFirst = true, e) => {
         e.stopPropagation()
     }
     emits('changeActiveNode', item, false)
-    if (item.type === 'folder' && isFirst) {
+    if (item.isFolder && isFirst) {
         handleOpenFolder(item)
     }
 }

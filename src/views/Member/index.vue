@@ -3,7 +3,7 @@
         <div class="m-ops">
             <el-card class="m-card">
                 <div class="m-con">
-                    <h4>成员：8</h4>
+                    <h4>成员：{{ tableData.length }}</h4>
                     <div class="m-row">
                         <el-input style="width: 60%;"></el-input>
                         <div class="m-btn">
@@ -24,16 +24,16 @@
                             <div class="mt-c" :style="{'--f': 2}">操作</div>
                         </div>
                         <div class="mt-body mt">
-                            <div class="mt-b-r" v-for="i in 6">
-                                <div class="mt-c" :style="{'--f': 1}">3</div>
+                            <div class="mt-b-r" v-for="i in tableData">
+                                <div class="mt-c" :style="{'--f': 1}">{{i.userId}}</div>
                                 <div class="mt-c" :style="{'--f': 3}">
                                     <img src="../../assets/images/user.jpeg" alt="">
-                                    <span>Ethan</span>
+                                    <span>{{ i.username }}</span>
                                 </div>
-                                <div class="mt-c" :style="{'--f': 3}">开发工程师</div>
-                                <div class="mt-c" :style="{'--f': 3}">加入日期</div>
+                                <div class="mt-c" :style="{'--f': 3}">{{ i.position }}</div>
+                                <div class="mt-c" :style="{'--f': 3}">{{ i.joinTime }}</div>
                                 <div class="mt-c" :style="{'--f': 2}">
-                                    <el-button size="small" type="danger">删除</el-button>
+                                    <el-button size="small" type="danger" @click="handleDeleteUser(i.userId)">删除</el-button>
                                 </div>
                             </div>
                         </div>
@@ -48,6 +48,39 @@
 </template>
 
 <script setup>
+import api from '../../api';
+import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
+
+const tableData = ref([])
+const store = useStore()
+const projectId = store.state.project.projectId
+
+const getTableData = async () => {
+    try {
+        const res = await api.getProjectMemberListRequest({
+            projectId: projectId
+        })
+        tableData.value = res.data
+    } catch {
+    }
+}
+
+const handleDeleteUser = async (userId) => {
+    try {
+        const res = await api.deleteProjectMemberRequest({
+            projectId: projectId,
+            userId: userId
+        })
+        if (res.code === 200) {
+            await getTableData()
+        }
+    } catch {}
+}
+
+onMounted(() => {
+    getTableData()
+})
 
 </script>
 

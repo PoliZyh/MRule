@@ -14,7 +14,7 @@
                 <h1>MRule规则引擎</h1>
                 <p>提供决策集、决策表多种类型的业务规则设计工具，从各个角度满足业务规则设计的需要。</p>
                 <div class="b-container">
-                    <button class="button" @click="goToLoginRegistration">在线体验</button>
+                    <button class="button" @click="handleLogin">在线体验</button>
                     <div class="b-icons">
                         <el-icon class="b-icon" style="--s:0s;"><ArrowRight /></el-icon>
                         <el-icon class="b-icon" style="--s:0.5s;"><ArrowRight /></el-icon>
@@ -61,6 +61,12 @@ const screenRef = ref()
 const vantaEffect = ref('')
 const scrollScreenProjectCenterRef = ref()
 const router = useRouter()
+
+const handleLogin = () => {
+    router.push({
+        name: 'Login'
+    })
+}
 
 onBeforeUnmount(() => {
     if(vantaEffect.value) {

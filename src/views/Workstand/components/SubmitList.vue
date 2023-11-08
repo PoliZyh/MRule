@@ -5,10 +5,10 @@
             近四次提交
         </div>
         <div class="lists">
-            <div class="list-item" v-for="(item, index) in submitList" :key="item.name" ref="listItemsRef" :style="{'--t': index/5 + 's'}">
+            <div class="list-item" v-for="(item, index) in props.info" :key="item.username" ref="listItemsRef" :style="{'--t': index/5 + 's'}">
                 <div class="reac" :style="{'--i': index / 15}"></div>
-                <span class="name">{{ item.name }}&nbsp;</span>
-                <span class="time">{{ `${item.userAccount}(${item.time})` }}</span>
+                <span class="name">{{ item.username }}&nbsp;</span>
+                <span class="time">{{ `(${item.time})` }}</span>
             </div>
             
         </div>
@@ -18,7 +18,12 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-
+const props = defineProps({
+    info: {
+        type: Array,
+        default: () => []
+    }
+})
 const submitList = ref([
     {
         name: 'conn',

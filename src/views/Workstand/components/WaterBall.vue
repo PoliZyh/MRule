@@ -8,13 +8,27 @@
 
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 import * as echarts from 'echarts'
 import 'echarts-liquidfill'
 
-const waterBallRef = ref()
+const props = defineProps({
+  pkgNum: Number
+})
 
-const option = {
+const waterBallRef = ref()
+const pn = ref(0)
+const mc = ref()
+watch(
+  () => props.pkgNum,
+  () => {
+    pn.value = props.pkgNum
+    option.value.series[0].label.normal.formatter = `${pn.value} \n \nPKG`
+    setMyOption(mc.value)
+  }
+)
+
+const option = ref({
         series: [
           {
             type: "liquidFill",
@@ -27,7 +41,7 @@ const option = {
             },
             label: {
               normal: {
-                formatter: "12 \n \nPKG",
+                formatter: `${pn.value} \n \nPKG`,
                 textStyle: {
                   fontSize: 25,
                   color: "#fff",
@@ -134,11 +148,16 @@ const option = {
             ],
           },
         ],
-};
+});
+
+const setMyOption = (echart) => {
+  echart.setOption(option.value, true)
+}
 
 onMounted(() => {
-    const echart = echarts.init(waterBallRef.value)
-    echart.setOption(option)
+  const echart = echarts.init(waterBallRef.value)
+  mc.value = echart
+  setMyOption(echart)
 })
 
 </script>

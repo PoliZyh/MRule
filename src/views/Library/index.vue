@@ -62,7 +62,12 @@
 <script setup>
 import FileTress from '@/components/FileTree/index.vue'
 import OperateHeader from './components/OperateHeader.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import api from '../../api';
+import { useStore } from 'vuex';
+
+const store = useStore()
+const projectId = store.state.project.projectId
 
 const activeNode = ref()
 const typeSelection = ref([
@@ -179,6 +184,22 @@ const hadnleCloseDialog = () => {
 const handleConfirmDialog = () => {
     isShowDialog.value = false
 }
+
+const getFileTree = async () => {
+    try {
+        const res = await api.getFileTreeRequest({
+            projectId,
+            type: 1
+        })
+        if (res.code === 200) {
+            data.value = res.data.data
+        }
+    } catch { }
+}
+
+onMounted(() => {
+    getFileTree()
+})
 </script>
 
 

@@ -2,14 +2,14 @@
     <div class="team-submit-list">
         <div class="t-content" >
             <div class="t-item" 
-            v-for="(i, index) in 15" 
+            v-for="(i, index) in props.info" 
             :key="i" 
             @click="handleSelect(index)" 
             :class="{'active-border': index === activeKey}">
                 <div class="t-sum" 
-                :style="{'--h': i/15*90 + '%'}"
+                :style="{'--h': i.submitNum/15*90 + '%'}"
                 :class="{active: index === activeKey}"></div>
-                <div class="t-name">{{ 'Ethan' }}</div>
+                <div class="t-name">{{ i.username }}</div>
             </div>
         </div>
     </div>
@@ -19,6 +19,13 @@
 <script setup>
 
 import { ref } from 'vue';
+
+const props = defineProps({
+    info: {
+        type: Array,
+        default: () => []
+    }
+})
 
 const activeKey = ref(0)
 

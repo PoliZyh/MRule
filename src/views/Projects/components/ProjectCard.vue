@@ -1,14 +1,43 @@
 <template>
-    <div class="project-card-box">
-        <span>我的规则引擎</span>
+    <div class="project-card-box" @click="handleRoute">
+        <span>{{ projectName }}</span>
         <span class="tag">
-            队长
+            {{ position === 0 ? '队长' : '队员'}}
         </span>
-        <span class="del"></span>
+        <span class="del" @click="handleDelete"></span>
     </div>
 </template>
 
 <script setup>
+// 0队长 1队员
+import api from '../../../api';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex'
+
+const router = useRouter()
+const store = useStore()
+const props = defineProps({
+    id: Number,
+    projectName: String,
+    position: Number
+})
+const emit = defineEmits(['getList'])
+
+const handleDelete = async () => {
+    await api.deleteProjectRequest({
+        id: props.id
+    });
+    emit('getList')
+}
+const handleRoute = () => {
+    router.push({
+        name: 'Rule',
+        params: {
+            projectId: props.id
+        }
+    })
+    store.commit('project/setProjectId', props.id)
+}
 </script>
 
 <style scoped lang="scss">
@@ -25,6 +54,7 @@
     display: flex;
     align-items: center;
     transition: all 0.3s linear;
+    cursor: pointer;
     .tag {
         padding: 3px 12px;
         font-size: 0.8rem;
