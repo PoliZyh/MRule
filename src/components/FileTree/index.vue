@@ -5,7 +5,11 @@
             <Nodes  :nodes-data="props.data" @change-active-node="handleChangeActiveNode" :active-node="props.activeNode"></Nodes>
         </template>
 
-        <TreeContextMenu v-model:isShow="isShowContextMenu" :pos="pos" :active-node="props.activeNode"></TreeContextMenu>
+        <TreeContextMenu 
+        v-model:isShow="isShowContextMenu" 
+        :pos="pos" 
+        :active-node="props.activeNode"
+        @refresh-tree="handleRefreshTree"></TreeContextMenu>
     </div>
 </template>
 
@@ -16,7 +20,7 @@ import Nodes from './components/Nodes.vue';
 import TreeContextMenu from './components/TreeContextMenu.vue';
 
 const props = defineProps(['data', 'activeNode'])
-const emits = defineEmits(['update:activeNode'])
+const emits = defineEmits(['update:activeNode', 'refreshFileTree'])
 const isShowContextMenu = ref(false)
 const nodesRef = ref()
 const pos = ref({
@@ -31,6 +35,11 @@ const handleChangeActiveNode = (newNode) => {
 
 const handleClickFileTree = () => {
     isShowContextMenu.value = false
+    emits('update:activeNode', '')
+}
+
+const handleRefreshTree = () => {
+    emits('refreshFileTree')
     emits('update:activeNode', '')
 }
 

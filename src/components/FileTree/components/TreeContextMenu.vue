@@ -23,6 +23,7 @@
 
 <script setup>
 import { computed, ref } from 'vue';
+import api from '../../../api';
 
 const props = defineProps({
     isShow: {
@@ -37,7 +38,7 @@ const props = defineProps({
         })
     }
 })
-const emits = defineEmits(['update:isShow'])
+const emits = defineEmits(['update:isShow', 'refreshTree'])
 const dialogTitle = ref('')
 const isShowDialog = ref(false)
 const inputName = ref('')
@@ -59,8 +60,19 @@ const handleCreateFile = (title) => {
     isShowDialog.value = true
 }
 
-const handleDelete = () => {
-
+const handleDelete = async () => {
+    if (!props.activeNode.id) {
+        return
+    }
+    try {
+        const res = await api.deleteVariableLibraryRequest({
+            fileId: props.activeNode.id
+        })
+        if (res.code === 200) {
+            emits('refreshTree')
+        }
+    } catch {} 
+    
 }
 
 </script>

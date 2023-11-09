@@ -105,7 +105,7 @@ export default {
     getAllVariableRequest(params) {
         return request({
             url: "/variable/get",
-            method: "GET",
+            method: "POST",
             data: params
         })
     },

@@ -6,19 +6,38 @@
         <el-button class="ops-h-item" icon="Edit">
             编辑
         </el-button>
-        <el-button class="ops-h-item" icon="Delete">
+        <el-button class="ops-h-item" icon="Delete" @click="handleDeleteRow">
             删除
         </el-button>
     </div>
 </template>
 
 <script setup>
-const emits = defineEmits(['addLibrary'])
-
+import api from '../../../api';
+const emits = defineEmits(['addLibrary', 'refresh'])
+const props = defineProps({
+    currentRow: {
+        default: () => ({}),
+        type: Object
+    }
+})
 
 const handleAddLibrary = () => {
     emits('addLibrary')
 }
+const handleDeleteRow = async () => {
+    if (!props.currentRow.id) {
+        ElMessage.error('请选择要删除的变量')
+        return
+    }
+    const res = await api.deleteVariableRequest({
+        variableId: props.currentRow.id
+    })
+    if (res.code === 200) {
+        emits('refresh')
+    }
+}
+
 </script>
 
 
