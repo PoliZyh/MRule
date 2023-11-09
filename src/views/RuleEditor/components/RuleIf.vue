@@ -32,7 +32,7 @@
                     <p class="tip">则执行</p>
                     <div class="so">
                         <template v-if="rule.body && rule.body.length > 0">
-                            <p v-for="row in rule.body" :key="row">
+                            <div v-for="row in rule.body" :key="row" class="so-row">
                                 <template v-if="row.type === 'print'">
                                     {{ 'console.log(' + row.received.varName + ');' }}
                                 </template>
@@ -43,9 +43,9 @@
                                     }}
                                 </template>
                                 <template v-else-if="row.type === 'if' || row.type === 'else if' || row.type === 'else'">
-                                    <RuleIf :rules="rule.body"></RuleIf>
+                                    <RuleIf :rules="[row]" style="margin-top: 10px;"></RuleIf>
                                 </template>
-                            </p>
+                            </div>
                         </template>
                         <el-button @click="handleAddMethod(rule.body)" size="small" type="primary" link>添加动作</el-button>
                     </div>
@@ -384,6 +384,7 @@ const cancelAddMethod = () => {
 const handleChangeType = () => {
     if (methodParams.value.type === 'if') {
         methodParams.value = deepCopy(ifItem)
+        // methodParams.value = JSON.parse(JSON.stringify(ifItem))
     } else {
         methodParams.value = {
             ...{
@@ -427,8 +428,9 @@ const handleChangeMethodRight = async () => {
     } catch { }
 }
 
-const confirmAddMethod = () => {
-    selectedBody.value.push(methodParams.value)
+const confirmAddMethod = (e) => {
+    e.stopPropagation()
+    selectedBody.value.push(deepCopy(methodParams.value))
     showMethodDialog.value = false
 }
 const handleChangePrint = async () => {
@@ -456,6 +458,7 @@ const clearMethod = () => {
             right: {}
         }
     }
+    // selectedBody.value = null
 }
 
 const addCondition = (conditions) => {
@@ -584,6 +587,7 @@ export default {
             .so {
                 padding-left: 10px;
                 margin-top: 5px;
+                
             }
         }
     }
