@@ -24,6 +24,7 @@ import api from "../../api";
 import { useStore } from "vuex";
 import RuleIf from "./components/RuleIf.vue";
 import RuleWhile from "./components/RuleWhile.vue";
+import { deepCopy } from "../../utils/deepCopy";
 
 const data = ref([]);
 const activeNode = ref({});

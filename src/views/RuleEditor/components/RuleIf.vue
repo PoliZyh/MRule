@@ -1,51 +1,58 @@
 
 <template>
     <div class="rule-if-box">
-        <div class="rule-if-row" v-for="rule in rules" :key="rule">
-            <div class="title">
-                <h4>
-                    {{ rule.type === 'if' ? '如果'
-                        : rule.type === 'else if' ? "或者如果"
-                            : '否则' }}
-                </h4>
-                <template v-if="rule.conditions && rule.conditions.length > 0">
-                    <p v-for="(ops, index) in rule.conditions">
-                        <template v-if="ops.left && ops.left !== null">
-                            <el-tag>
-                                {{ ops.left.varName }} {{ ops.operator }} {{ ops.right.varName }}
-                            </el-tag>
+        <template v-for="rule in rules" :key="rule">
+            
+            <div class="rule-if-row" v-if="rule.type === 'if' || rule.type === 'else if' || rule.type === 'else'">
+                <div class="title">
+                    <h4>
+                        {{ rule.type === 'if' ? '如果'
+                            : rule.type === 'else if' ? "或者如果"
+                                : '否则' }}
+                    </h4>
+                    <template v-if="rule.conditions && rule.conditions.length > 0">
+                        <p v-for="(ops, index) in rule.conditions">
+                            <template v-if="ops.left && ops.left !== null">
+                                <el-tag>
+                                    {{ ops.left.varName }} {{ ops.operator }} {{ ops.right.varName }}
+                                </el-tag>
 
-                        </template>
-                        <template v-else>
-                            <el-tag>
-                                {{ ops.operator }} {{ ops.right.varName }}
-                            </el-tag>
-
-                        </template>
-                    </p>
-                </template>
-                <el-button type="primary" link size="small" @click="addCondition(rule.conditions)">添加条件</el-button>
-            </div>
-            <div class="bodyer">
-                <p class="tip">则执行</p>
-                <div class="so">
-                    <template v-if="rule.body">
-                        <p v-for="row in rule.body" :key="row">
-                            <template v-if="row.type === 'print'">
-                                {{ 'console.log(' + row.received.varName + ');' }}
                             </template>
-                            <template v-else-if="row.type === 'calculate'">
-                                {{ '' + row.received.varName + ' = '
-                                    + row.calculate.left.varName + ' ' + row.calculate.operator + ' '
-                                    + row.calculate.right.varName + ';'
-                                }}
+                            <template v-else>
+                                <el-tag>
+                                    {{ ops.operator }} {{ ops.right.varName }}
+                                </el-tag>
+
                             </template>
                         </p>
                     </template>
-                    <el-button @click="handleAddMethod(rule.body)" size="small" type="primary" link>添加动作</el-button>
+                    <el-button type="primary" link size="small" @click="addCondition(rule.conditions)">添加条件</el-button>
+                </div>
+                <div class="bodyer">
+                    <p class="tip">则执行</p>
+                    <div class="so">
+                        <template v-if="rule.body && rule.body.length > 0">
+                            <p v-for="row in rule.body" :key="row">
+                                <template v-if="row.type === 'print'">
+                                    {{ 'console.log(' + row.received.varName + ');' }}
+                                </template>
+                                <template v-else-if="row.type === 'calculate'">
+                                    {{ '' + row.received.varName + ' = '
+                                        + row.calculate.left.varName + ' ' + row.calculate.operator + ' '
+                                        + row.calculate.right.varName + ';'
+                                    }}
+                                </template>
+                                <template v-else-if="row.type === 'if' || row.type === 'else if' || row.type === 'else'">
+                                    <RuleIf :rules="rule.body"></RuleIf>
+                                </template>
+                            </p>
+                        </template>
+                        <el-button @click="handleAddMethod(rule.body)" size="small" type="primary" link>添加动作</el-button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </template>
+
 
         <!-- dialog -->
         <el-dialog title="添加条件" v-model="showConditionDialog" width="40%">
@@ -127,7 +134,7 @@
         <el-dialog title="添加动作" v-model="showMethodDialog" width="40%">
             <el-form>
                 <el-form-item label="动作类型">
-                    <el-select placeholder="请选择动作类型" v-model="methodParams.type">
+                    <el-select placeholder="请选择动作类型" v-model="methodParams.type" @change="handleChangeType">
                         <el-option v-for="item in methodOptions" :key="item.name" :label="item.name"
                             :value="item.type"></el-option>
                     </el-select>
@@ -184,9 +191,10 @@
                                         </el-row>
                                         <el-row style="width: 100%;" :gutter="20">
                                             <el-col :span="12">
-                                                <el-select v-model="methodParams.calculate.left.libId" @change="handleChangeMethodLeft">
-                                                    <el-option v-for="item in libOptions" :key="item.id" :label="item.fileName"
-                                                    :value="item.id" />
+                                                <el-select v-model="methodParams.calculate.left.libId"
+                                                    @change="handleChangeMethodLeft">
+                                                    <el-option v-for="item in libOptions" :key="item.id"
+                                                        :label="item.fileName" :value="item.id" />
                                                 </el-select>
                                             </el-col>
                                             <el-col :span="12" v-if="methodParams.calculate.left.libId">
@@ -199,8 +207,8 @@
                                     </el-form-item>
                                     <el-form-item label="运算" style="margin-top: 10px;">
                                         <el-select v-model="methodParams.calculate.operator">
-                                            <el-option v-for="item in opsMethodOptions" :key="item.name"
-                                            :label="item.name" :value="item.value"></el-option>
+                                            <el-option v-for="item in opsMethodOptions" :key="item.name" :label="item.name"
+                                                :value="item.value"></el-option>
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item label="右值">
@@ -210,9 +218,10 @@
                                         </el-row>
                                         <el-row style="width: 100%;" :gutter="20">
                                             <el-col :span="12">
-                                                <el-select v-model="methodParams.calculate.right.libId" @change="handleChangeMethodRight">
-                                                    <el-option v-for="item in libOptions" :key="item.id" :label="item.fileName"
-                                                    :value="item.id" />
+                                                <el-select v-model="methodParams.calculate.right.libId"
+                                                    @change="handleChangeMethodRight">
+                                                    <el-option v-for="item in libOptions" :key="item.id"
+                                                        :label="item.fileName" :value="item.id" />
                                                 </el-select>
                                             </el-col>
                                             <el-col :span="12" v-if="methodParams.calculate.right.libId">
@@ -226,6 +235,9 @@
                                 </el-form>
                             </el-form-item>
                         </el-form>
+                    </el-form-item>
+                    <el-form-item label="渲染分支" v-else-if="methodParams.type === 'if'">
+                        添加嵌套IF
                     </el-form-item>
                 </template>
             </el-form>
@@ -249,6 +261,8 @@ import { onMounted, ref, watch } from 'vue';
 import { extractObjects } from '@/utils/rule.js'
 import api from '../../../api';
 import { useStore } from 'vuex';
+import { ifList, ifItem } from './init.js'
+import { deepCopy } from "../../../utils/deepCopy";
 
 const store = useStore()
 const projectId = store.state.project.projectId
@@ -342,6 +356,10 @@ const methodOptions = ref([
     {
         type: 'calculate',
         name: '计算',
+    },
+    {
+        type: 'if',
+        name: '条件规则'
     }
 ])
 const methodParams = ref({
@@ -362,6 +380,27 @@ const showMethodDialog = ref(false)
 
 const cancelAddMethod = () => {
     showMethodDialog.value = false
+}
+const handleChangeType = () => {
+    if (methodParams.value.type === 'if') {
+        methodParams.value = deepCopy(ifItem)
+    } else {
+        methodParams.value = {
+            ...{
+                type: '',
+                received: {
+                    libId: '',
+                    varName: ''
+                },
+                calculate: {
+                    left: {},
+                    operator: "",
+                    right: {}
+                }
+            },
+            type: methodParams.value.type
+        }
+    }
 }
 
 const handleChangeMethodLeft = async () => {
@@ -509,6 +548,12 @@ onMounted(() => {
 </script>
 
 
+
+<script>
+export default {
+    name: 'RuleIf'
+}
+</script>
 
 <style scoped lang="scss">
 .rule-if-box {
