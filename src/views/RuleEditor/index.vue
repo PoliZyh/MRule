@@ -19,61 +19,40 @@
 
 <script setup>
 import FileTrees from "@/components/FileTree/index.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import api from "../../api";
 import { useStore } from "vuex";
 import RuleIf from "./components/RuleIf.vue";
 import RuleWhile from "./components/RuleWhile.vue";
+import { parseStringToStructure, mapStructureToString } from '@/utils/rule.js'
 
 
 const data = ref([]);
 const activeNode = ref({});
 const store = useStore()
 const projectId = store.state.project.projectId;
-const editor = ref(
-    [
-        {
-            type: "if",
-            conditions: [
-                {
-                    left: {
-                        libId: 1,
-                        varName: "a"
-                    },
-                    operator: ">",
-                    right: {
-                        libId: 2,
-                        varName: "b"
-                    }
-                }
-            ],
-            body: [
-
-            ]
-        },
-        {
-            type: "else if",
-            conditions: [],
-            body: []
-        },
-        {
-            type: "else",
-            body: []
-        }
-    ]
-)
+const editor = ref([])
 
 const getEditorRuleContent = async () => {
     try {
-        const res = api.getAllRulesRequest({
+        const res = await api.getAllRulesRequest({
             fileId: activeNode.value.id,
             fileType: 0,
         })
+        console.log(res)
         if (res.code === 200) {
-            // editor.value = res.data[0].rule
+            console.log(res.data[0].rule)
+            editor.value = parseStringToStructure(res.data[0].rule)
         }
     } catch {}
 }
+
+watch(() => activeNode.value,
+() => {
+    if (activeNode.value && !activeNode.value.isFolder) {
+        getEditorRuleContent()
+    }
+})
 
 const getFileTree = async () => {
     try {

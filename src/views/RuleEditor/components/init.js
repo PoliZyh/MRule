@@ -2,7 +2,7 @@ export const ifList = [
     {
         type: "if",
         conditions: [
-
+            
         ],
         body: [
 
@@ -28,4 +28,17 @@ export const ifItem = {
     body: [
 
     ]
+}
+
+
+export const elseItem = {
+    type: "else",
+    body: []
+}
+
+export const elseIfItem = {
+    type: "else if",
+    conditions: [],
+    body: []
+
 }
