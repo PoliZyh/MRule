@@ -3,16 +3,22 @@ import request from "../utils/request";
 export default {
     // 2.1 工作台数据
     getWorkplaceDataRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/rule/console",
+            url: `/rule/console?${queryString}`,
             method: "GET",
             data: params
         })
     },
     // 2.2 项目动态
     getProjectDynamicRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/rule/projectDynamics",
+            url: `/rule/projectDynamics?${queryString}`,
             method: "GET",
             data: params
         })
@@ -20,8 +26,11 @@ export default {
     // 2.3 项目成员
     // 2.3.1 获取项目成员列表
     getProjectMemberListRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/project/memebers",
+            url: `/project/memebers?${queryString}`,
             method: "GET",
             data: params
         })
@@ -37,8 +46,11 @@ export default {
     // 2.4 规则状态
     // 2.4.1 获取全部规则状态
     getRuleStatusListRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/rule/ruleStatus/get",
+            url: `/rule/ruleStatus/get?${queryString}`,
             method: "GET",
             data: params
         })
@@ -69,8 +81,11 @@ export default {
     },
     // 2.4.5 删除规则
     deleteRuleRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/rule/ruleStatus/delete",
+            url: `/rule/ruleStatus/delete?${queryString}`,
             method: "GET",
             data: params
         })
@@ -78,24 +93,33 @@ export default {
     // 2.5 设置面板
     // 2.5.1 用户申请列表接口
     getUserApplyListRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/apply/get",
+            url: `/apply/get?${queryString}`,
             method: "GET",
             data: params
         })
     },
     // 2.5.2 同意/拒绝用户进入团队接口
     agreeOrRefuseUserRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/apply/handle",
+            url: `/apply/handle?${queryString}`,
             method: "GET",
             data: params
         })
     },
     //2.5.3 用户申请加入团队接口
     applyUserRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/apply/add",
+            url: `/apply/add${queryString}`,
             method: "GET",
             data: params
         })
@@ -111,16 +135,22 @@ export default {
     },
     // 2.6.2 删除某个变量
     deleteVariableRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/variable/delete",
+            url: `/variable/delete?${queryString}`,
             method: "GET",
             data: params
         })
     },
     //2.6.3 删除某个变量库
     deleteVariableLibraryRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/variable/deleteSet",
+            url: `/variable/deleteSet?${queryString}`,
             method: "GET",
             data: params
         })
@@ -150,12 +180,45 @@ export default {
             data: params
         })
     },
-    // 2.7.4 修改规则
+    // 2.7.7 / 4 修改规则
     updateRuleRequest(params) {
         return request({
             url: "/rule/update",
             method: "POST",
             data: params
         })
+    },
+    // 2.7.5 新增变量
+    addVariableRequest(params) {
+        return request({
+            url: "/variable/add",
+            method: "POST",
+            data: params
+        })
+    },
+    // 2.7.6 修改变量
+    updateVariableRequest(params) {
+        return request({
+            url: "/variable/update",
+            method: "POST",
+            data: params
+        })
+    },
+    // 2.7.8 创建文件（夹）
+    createFileRequest(params) {
+        return request({
+            url: "/file/createFile",
+            method: "POST",
+            data: params
+        })
+    },
+    // 2.7.10 获取某个决策集/规则库里的所有规则
+    getAllRulesRequest(params) {
+        return request({
+            url: "/rule/get",
+            method: "POST",
+            data: params 
+        })
     }
+
 }

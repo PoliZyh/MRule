@@ -63,6 +63,18 @@ const editor = ref(
     ]
 )
 
+const getEditorRuleContent = async () => {
+    try {
+        const res = api.getAllRulesRequest({
+            fileId: activeNode.value.id,
+            fileType: 0,
+        })
+        if (res.code === 200) {
+            // editor.value = res.data[0].rule
+        }
+    } catch {}
+}
+
 const getFileTree = async () => {
     try {
         const res = await api.getFileTreeRequest({

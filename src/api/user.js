@@ -3,8 +3,12 @@ import request from "../utils/request"
 export default {
     // 1.1用户登录
     userLoginRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            method: 'GET',
+            method: 'POST',
+            // url: `/user/login?${queryString}`,
             url: '/user/login',
             data: params
         })
@@ -19,9 +23,12 @@ export default {
     },
     // 1.3 项目列表
     projectListRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
             method: 'GET',
-            url: '/projects/get',
+            url: `/projects/get?${queryString}`,
             data: params
         })
     },
@@ -42,10 +49,11 @@ export default {
         })
     },
     // 1.6 获取用户信息
-    getUserInfoRequest() {
+    getUserInfoRequest(params) {
         return request({
             method: 'POST',
             url: '/getUserInfo',
+            data: params
         })
     }
 }
