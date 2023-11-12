@@ -79,7 +79,7 @@ const handleBeforeClose = (done) => {
 }
 
 const handleConfirm = async () => {
-    if (activeName === 'create') {
+    if (activeName.value === 'create') {
         try {
             await api.addProjectRequest(newProjectParams)
         } catch {

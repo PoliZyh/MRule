@@ -28,7 +28,7 @@
                     </template>
                     <el-button type="primary" link size="small" @click="addCondition(rule.conditions)">添加条件</el-button>
                     <template v-if="rule.type === 'if'">
-                        <el-button type="primary" link size="small" >新增分支</el-button>
+                        <el-button type="primary" link size="small" @click="handleAddItem()">新增分支</el-button>
                     </template>
                 </div>
                 <div class="bodyer">
@@ -46,7 +46,7 @@
                                     }}
                                 </template>
                                 <template v-else-if="row.type === 'if' || row.type === 'else if' || row.type === 'else'">
-                                    <RuleIf :rules="[row]" style="margin-top: 10px;"></RuleIf>
+                                    <RuleIf :rules="[row]" style="margin-top: 10px;" @update-rule="handleUpdate"></RuleIf>
                                 </template>
                             </div>
                         </template>
@@ -264,9 +264,10 @@ import { onMounted, ref, watch } from 'vue';
 import { extractObjects } from '@/utils/rule.js'
 import api from '../../../api';
 import { useStore } from 'vuex';
-import { ifList, ifItem } from './init.js'
+import { ifList, ifItem, elseIfItem, elseItem } from './init.js'
 import { deepCopy } from "../../../utils/deepCopy";
 
+const emits = defineEmits(['updateRule'])
 const store = useStore()
 const projectId = store.state.project.projectId
 const props = defineProps({
@@ -275,6 +276,8 @@ const props = defineProps({
         type: Array
     }
 })
+const showSwitch = ref(false)
+const swichItem = ref('')
 const showConditionDialog = ref(false)
 const selectedConditions = ref([])
 const selectedBody = ref([])
@@ -545,6 +548,15 @@ const clearOption = () => {
         },
     }
     isInherit.value = false
+}
+
+const handleAddItem = () => {
+    emits('updateRule', deepCopy(elseIfItem))
+}
+
+const handleUpdate = (newRule) => {
+    selectedBody.value.splice(1, 0, newRule)
+    
 }
 
 onMounted(() => {
