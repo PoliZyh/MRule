@@ -3,7 +3,7 @@
         <el-button class="ops-h-item" @click="handleAddLibrary" icon="Plus">
             新增
         </el-button>
-        <el-button class="ops-h-item" icon="Edit">
+        <el-button class="ops-h-item" icon="Edit" @click="handleUpdateLibrar">
             编辑
         </el-button>
         <el-button class="ops-h-item" icon="Delete" @click="handleDeleteRow">
@@ -14,7 +14,7 @@
 
 <script setup>
 import api from '../../../api';
-const emits = defineEmits(['addLibrary', 'refresh'])
+const emits = defineEmits(['addLibrary', 'refresh', 'updateLibrary'])
 const props = defineProps({
     currentRow: {
         default: () => ({}),
@@ -24,6 +24,9 @@ const props = defineProps({
 
 const handleAddLibrary = () => {
     emits('addLibrary')
+}
+const handleUpdateLibrar = () => {
+    emits('updateLibrary')
 }
 const handleDeleteRow = async () => {
     if (!props.currentRow.id) {

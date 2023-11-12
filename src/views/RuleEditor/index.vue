@@ -29,8 +29,16 @@
                 </span>
             </template>
         </el-dialog>
-        <el-dialog title="快速测试" width="40%" v-model="iShowRunDialog">
-            <el-row></el-row>
+        <el-dialog title="快速测试" width="40%" v-model="isShowRunDialog">
+            <template v-if="consoleData.length === 0">
+                
+            </template>
+            <template v-else>
+                <h4 style="margin-bottom: 10px;">控制台</h4>
+                <el-row v-for="line in consoleData" :key="line" style="margin-bottom: 5px;">
+                    <p>> {{ line }}</p>
+                </el-row>
+            </template>
         </el-dialog>
     </div>
 </template>
@@ -53,8 +61,9 @@ const projectId = store.state.project.projectId;
 const editor = ref([])
 const ruleName = ref('')
 const isShowDialog = ref(false)
-const iShowRunDialog = ref(false)
+const isShowRunDialog = ref(false)
 const ruleId = ref(0)
+const consoleData = ref([])
 
 const getEditorRuleContent = async () => {
     try {
@@ -119,9 +128,19 @@ const handleConfirmSave = async () => {
     
 }
 
-const handleShowRun = () => {
-
+const handleShowRun = async () => {
+    try {
+        const res = await api.runProjectRequest({
+            type: 0,
+            id: ruleId.value
+        })
+        if (res.code == 200) {
+            consoleData.value = res.data
+        }
+    } catch {}
+    isShowRunDialog.value = true
 }
+
 
 onMounted(() => {
     getFileTree()

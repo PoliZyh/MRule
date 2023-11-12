@@ -3,7 +3,8 @@
         <div class="lp-left">
             <template v-if="activeNode && !activeNode.isFolder">
                 <div class="ops-header">
-                    <OperateHeader @refresh="getVariables(parseInt(activeNode.id))" :current-row="currentRow" @add-library="handleAddLibrary"></OperateHeader>
+                    <OperateHeader @updateLibrary="handleUpdateCurRow" @refresh="getVariables(parseInt(activeNode.id))"
+                        :current-row="currentRow" @add-library="handleAddLibrary"></OperateHeader>
                 </div>
                 <div class="lp-table">
                     <el-table :data="tableData" highlight-current-row @current-change="handleCurrentChange">
@@ -11,8 +12,7 @@
                         <el-table-column prop="variableName" label="名称" width="143"></el-table-column>
                         <el-table-column prop="description" label="描述" width="260" show-overflow-tooltip></el-table-column>
                         <el-table-column prop="variableType" label="数据类型" width="150"></el-table-column>
-                        <el-table-column prop="value" label="默认值" width="190"
-                            show-overflow-tooltip></el-table-column>
+                        <el-table-column prop="value" label="默认值" width="190" show-overflow-tooltip></el-table-column>
                     </el-table>
                 </div>
             </template>
@@ -25,21 +25,22 @@
         </div>
         <el-dialog v-model="isShowDialog" title="新增" width="40%">
             <el-form label-width="70px" label-position="right">
-            
+
                 <el-form-item label="名称">
-                    <el-input placeholder="请输入名称" style="width: 50%;"></el-input>
+                    <el-input placeholder="请输入名称" v-model="dialogParams.variableName" style="width: 50%;"></el-input>
                 </el-form-item>
                 <el-form-item label="描述">
-                    <el-input :autosize="{ minRows: 3 }" type="textarea" placeholder="请输入描述"></el-input>
+                    <el-input v-model="dialogParams.description" :autosize="{ minRows: 3 }" type="textarea"
+                        placeholder="请输入描述"></el-input>
                 </el-form-item>
                 <el-form-item label="数据类型">
-                    <el-select v-model="dialogParams.dataTypeSelection" placeholder="请选择数据类型">
+                    <el-select v-model="dialogParams.variableType" placeholder="请选择数据类型">
                         <el-option v-for="item in dataTypeSelection" :key="item.value" :label="item.type"
                             :value="item.value" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="默认值">
-                    <el-input placeholder="请输入默认值" style="width: 50%;"></el-input>
+                    <el-input placeholder="请输入默认值" v-model="dialogParams.value" style="width: 50%;"></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -66,16 +67,7 @@ const store = useStore()
 const projectId = store.state.project.projectId
 
 const activeNode = ref()
-const typeSelection = ref([
-    {
-        type: '常量',
-        value: 0
-    },
-    {
-        type: '变量',
-        value: 1
-    }
-])
+
 const dataTypeSelection = ref([
     {
         type: 'String',
@@ -148,8 +140,10 @@ const data = ref([
 const currentRow = ref()
 const tableData = ref([])
 const dialogParams = ref({
-    typeSelection: '',
-    dataTypeSelection: ''
+    description: '',
+    value: '',
+    variableName: '',
+    variableType: ''
 })
 
 watch(
@@ -169,9 +163,26 @@ const handleAddLibrary = () => {
     isShowDialog.value = true
 }
 const hadnleCloseDialog = () => {
+    clearParams()
     isShowDialog.value = false
 }
-const handleConfirmDialog = () => {
+const handleConfirmDialog = async () => {
+    if (dialogParams.value.id) {
+        try {
+            const res = await api.updateVariableRequest({
+                ...dialogParams.value
+            })
+        } catch { }
+    } else {
+        const res = await api.addVariableRequest({
+            fileId: activeNode.value.id,
+            ...dialogParams.value
+        })
+        if (res.code == 200) {
+            getVariables(parseInt(activeNode.value.id))
+        }
+    }
+    clearParams()
     isShowDialog.value = false
 }
 
@@ -195,8 +206,27 @@ const getVariables = async (fileId) => {
         })
         if (res.code === 200) {
             tableData.value = res.data
+            clearParams()
         }
-    } catch {}
+    } catch { }
+}
+
+const clearParams = () => {
+    dialogParams.value = {
+        description: '',
+        value: '',
+        variableName: '',
+        variableType: '',
+        id: ''
+    }
+}
+
+const handleUpdateCurRow = () => {
+    dialogParams.value = {
+        ...currentRow.value
+    }
+
+    isShowDialog.value = true
 }
 
 onMounted(() => {
