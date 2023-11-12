@@ -5,7 +5,7 @@
                 <el-button icon="Check" @click="handleSave">保存</el-button>
                 <el-button icon="CirclePlus" @click="handleAddIf">添加条件规则</el-button>
                 <el-button icon="CirclePlus">添加循环规则</el-button>
-                <el-button icon="ScaleToOriginal">快速测试</el-button>
+                <el-button icon="ScaleToOriginal" @click="handleShowRun">快速测试</el-button>
             </div>
             <div class="re-left-bodyer">
                 <RuleIf :rules="editor" @update-rule="handleUpdateRule"></RuleIf>
@@ -29,6 +29,9 @@
                 </span>
             </template>
         </el-dialog>
+        <el-dialog title="快速测试" width="40%" v-model="iShowRunDialog">
+            <el-row></el-row>
+        </el-dialog>
     </div>
 </template>
 
@@ -50,6 +53,8 @@ const projectId = store.state.project.projectId;
 const editor = ref([])
 const ruleName = ref('')
 const isShowDialog = ref(false)
+const iShowRunDialog = ref(false)
+const ruleId = ref(0)
 
 const getEditorRuleContent = async () => {
     try {
@@ -57,10 +62,10 @@ const getEditorRuleContent = async () => {
             fileId: activeNode.value.id,
             fileType: 0,
         })
-        console.log(res)
         if (res.code === 200) {
-            console.log(res.data[0].rule)
             editor.value = parseStringToStructure(res.data[0].rule)
+            ruleId.value = res.data[0].id
+            ruleName.value = res.data[0].ruleName
         }
     } catch {}
 }
@@ -112,6 +117,10 @@ const handleConfirmSave = async () => {
         }
     } catch {}
     
+}
+
+const handleShowRun = () => {
+
 }
 
 onMounted(() => {
