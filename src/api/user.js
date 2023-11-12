@@ -23,12 +23,9 @@ export default {
     },
     // 1.3 项目列表
     projectListRequest(params) {
-        const queryString = Object.keys(params)
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-        .join('&');
         return request({
-            method: 'GET',
-            url: `/projects/get?${queryString}`,
+            method: 'POST',
+            url: `/projects/get`,
             data: params
         })
     },

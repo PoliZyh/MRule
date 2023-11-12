@@ -115,12 +115,10 @@ export default {
     },
     //2.5.3 用户申请加入团队接口
     applyUserRequest(params) {
-        const queryString = Object.keys(params)
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-        .join('&');
+      
         return request({
-            url: `/apply/add${queryString}`,
-            method: "GET",
+            url: `/apply/add`,
+            method: "POST",
             data: params
         })
     },

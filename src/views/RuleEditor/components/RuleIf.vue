@@ -556,7 +556,6 @@ const handleAddItem = () => {
 
 const handleUpdate = (newRule) => {
     selectedBody.value.splice(1, 0, newRule)
-    
 }
 
 onMounted(() => {
