@@ -94,13 +94,12 @@ const store = useStore()
 const projectId = store.state.project.projectId
 
 const getWorkstandData = async () => {
-    console.log(projectId)
     try {
         const res = await api.getWorkplaceDataRequest({
             projectId: projectId
         })
-        if (res.code === 200) {
-            workstandData.value = res.data
+        if (res.data.code === 200) {
+            workstandData.value = res.data.data
         }
     } catch {}
 }

@@ -223,7 +223,7 @@ const getVariables = async (fileId) => {
 
 const clearParams = () => {
     dialogParams.value = {
-        description: '',
+        description: '', 
         value: '',
         variableName: '',
         variableType: '',

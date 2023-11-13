@@ -1,4 +1,5 @@
 import request from "../utils/request";
+import axios from "axios";
 
 export default {
     // 2.1 工作台数据
@@ -6,11 +7,7 @@ export default {
         const queryString = Object.keys(params)
         .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
         .join('&');
-        return request({
-            url: `/rule/console?${queryString}`,
-            method: "GET",
-            data: params
-        })
+        return axios.get(`https://www.fastmock.site/mock/c6545c717f98dc1a6910d7a16011fb03/api/rule/console?${queryString}`)
     },
     // 2.2 项目动态
     getProjectDynamicRequest(params) {
