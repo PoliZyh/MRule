@@ -59,7 +59,7 @@
 <script setup>
 import FileTress from '@/components/FileTree/index.vue'
 import OperateHeader from './components/OperateHeader.vue';
-import { onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 import api from '../../api';
 import { useStore } from 'vuex';
 
@@ -159,7 +159,14 @@ const handleCurrentChange = (row) => {
     currentRow.value = row
 }
 
-const handleAddLibrary = () => {
+const handleAddLibrary = async () => {
+    dialogParams.value = {
+        description: '',
+        value: '',
+        variableName: '',
+        variableType: ''
+    }
+    await nextTick()
     isShowDialog.value = true
 }
 const hadnleCloseDialog = () => {
@@ -172,6 +179,9 @@ const handleConfirmDialog = async () => {
             const res = await api.updateVariableRequest({
                 ...dialogParams.value
             })
+            if (res.code === 200) {
+                getVariables(parseInt(activeNode.value.id))
+            }
         } catch { }
     } else {
         const res = await api.addVariableRequest({
