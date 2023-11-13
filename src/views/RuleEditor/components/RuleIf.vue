@@ -390,7 +390,6 @@ const cancelAddMethod = () => {
 const handleChangeType = () => {
     if (methodParams.value.type === 'if') {
         methodParams.value = deepCopy(ifItem)
-        // methodParams.value = JSON.parse(JSON.stringify(ifItem))
     } else {
         methodParams.value = {
             ...{

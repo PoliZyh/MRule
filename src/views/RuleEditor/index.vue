@@ -4,11 +4,19 @@
             <div class="re-left-header">
                 <el-button icon="Check" @click="handleSave">保存</el-button>
                 <el-button icon="CirclePlus" @click="handleAddIf">添加条件规则</el-button>
-                <el-button icon="CirclePlus">添加循环规则</el-button>
+                <el-button icon="CirclePlus" @click="handleAddWhile">添加循环规则</el-button>
                 <el-button icon="ScaleToOriginal" @click="handleShowRun">快速测试</el-button>
             </div>
             <div class="re-left-bodyer">
-                <RuleIf :rules="editor" @update-rule="handleUpdateRule"></RuleIf>
+                <template v-if="editor.length === 0">
+                    <el-empty description="规则为空" />
+                </template>
+                <template v-else-if="editor.length > 0 && editor[0].type === 'if'">
+                    <RuleIf :rules="editor" @update-rule="handleUpdateRule"></RuleIf>
+                </template>
+                <template v-else-if="editor.length > 0 && editor[0].type === 'while'">
+                    <RuleWhile :rules="editor"></RuleWhile>
+                </template>
             </div>
         </div>
         <div class="re-right">
@@ -51,7 +59,7 @@ import { useStore } from "vuex";
 import RuleIf from "./components/RuleIf.vue";
 import RuleWhile from "./components/RuleWhile.vue";
 import { parseStringToStructure, mapStructureToString } from '@/utils/rule.js'
-import { ifItem, elseItem } from "./components/init";
+import { ifItem, elseItem, whileItem } from "./components/init";
 import { deepCopy } from "../../utils/deepCopy";
 
 const data = ref([]);
@@ -139,6 +147,10 @@ const handleShowRun = async () => {
         }
     } catch {}
     isShowRunDialog.value = true
+}
+
+const handleAddWhile = () => { 
+    editor.value = [deepCopy(whileItem)]
 }
 
 

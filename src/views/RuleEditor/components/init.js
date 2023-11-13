@@ -42,3 +42,12 @@ export const elseIfItem = {
     body: []
 
 }
+
+
+export const whileItem = {
+    type: "while",
+    conditions: [],
+    body: []
+}
+
+
