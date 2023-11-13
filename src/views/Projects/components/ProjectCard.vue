@@ -2,7 +2,7 @@
     <div class="project-card-box" @click="handleRoute">
         <span>{{ projectName }}</span>
         <span class="tag">
-            {{ position === 0 ? '队长' : '队员'}}
+            {{ position === 1 ? '队长' : '队员'}}
         </span>
         <span class="del" @click="handleDelete"></span>
     </div>

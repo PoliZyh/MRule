@@ -25,7 +25,7 @@ export default {
     projectListRequest(params) {
         return request({
             method: 'POST',
-            url: `/projects/get`,
+            url: `/project/get`,
             data: params
         })
     },
@@ -33,7 +33,7 @@ export default {
     deleteProjectRequest(params) {
         return request({
             method: 'POST',
-            url: '/projects/delete',
+            url: '/project/delete',
             data: params
         })
     },
@@ -41,7 +41,7 @@ export default {
     addProjectRequest(params) {
         return request({
             method: 'POST',
-            url: '/projects/add',
+            url: '/project/add',
             data: params
         })
     },

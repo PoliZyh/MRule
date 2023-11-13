@@ -26,7 +26,7 @@
                             </template>
                         </p>
                     </template>
-                    <el-button type="primary" link size="small" @click="addCondition(rule.conditions)">添加条件</el-button>
+                    <el-button v-if="rule.type==='if' || rule.type === 'else if'" type="primary" link size="small" @click="addCondition(rule.conditions)">添加条件</el-button>
                     <template v-if="rule.type === 'if'">
                         <el-button type="primary" link size="small" @click="handleAddItem()">新增分支</el-button>
                     </template>
