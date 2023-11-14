@@ -1,7 +1,7 @@
 <template>
     <div class="tree-context-menu-box" v-show="isShow" :style="style">
-        <div class="ctx-item" @click="handleCreateFolder($event, '文件夹')" v-show="activeNode.isFolder || activeNode === ''">新建文件夹</div>
-        <div class="ctx-item" @click="handleCreateFile($event, '文件')" v-show="activeNode.isFolder || activeNode === ''">新建文件</div>
+        <div class="ctx-item" @click="handleCreateFolder($event, '文件夹')" v-show="activeNode.isFolder || activeNode === '' || Object.keys(activeNode).length === 0">新建文件夹</div>
+        <div class="ctx-item" @click="handleCreateFile($event, '文件')" v-show="activeNode.isFolder || activeNode === '' || Object.keys(activeNode).length === 0">新建文件</div>
         <div class="ctx-item" @click="handleDelete()" v-show="activeNode && activeNode.id">删除</div>
     </div>
     <el-dialog v-model="isShowDialog" :title="'创建' + dialogTitle">
@@ -100,7 +100,7 @@ const handleConfirm = async () => {
     try {
         const res = await api.createFileRequest({
             fileName: inputName.value,
-            fileTypeMap: fileTypeMap[route.fullPath],
+            fileType: fileTypeMap[route.fullPath],
             isFolder: isFolder.value,
             parentId: props.activeNode.id ? props.activeNode.id : -1,
             projectId
