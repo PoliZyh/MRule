@@ -2,7 +2,7 @@
     <div class="menu-box">
         <div class="top">
             <img src="../../../assets/images/user.jpeg" alt="">
-            <div class="user">
+            <div class="user" @click="handleLoginout">
                 <span>Ethan</span>
                 <span>工程师 队长</span>
             </div>
@@ -34,10 +34,16 @@ const router = useRouter()
 const route = useRoute()
 const store = useStore()
 const routeMap = store.state.rule.ruleRoutesMap
+const handleLoginout = () => {
+    router.replace({
+        name: 'Home'
+    })
+}
 
 onMounted(() => {
     const curRoute = route.fullPath
     store.commit('rule/initActiveKey', curRoute)
+
 })
 
 
@@ -82,6 +88,7 @@ const handleRouter = (menuItem) => {
             position: relative;
             width: 100%;
             gap: 3px;
+            pointer-events:click;
             span {
                 font-size: 0.8rem;
                 font-weight: 400;
@@ -107,6 +114,7 @@ const handleRouter = (menuItem) => {
             transition: all 0.3s;
             border-radius: 5px;
             cursor: pointer;
+            pointer-events: all;
         }
         .user:hover::after {
             content: 'Out';

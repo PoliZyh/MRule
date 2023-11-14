@@ -9,7 +9,7 @@
                     <!-- 包含登录和注册表单的表单容器 -->
                     <div class="forms-wrap">
                         <!-- 登录表单 -->
-                        <form  autocomplete="off" class="sign-in-form">
+                        <div class="form sign-in-form">
                             <!-- 包含标题和切换注册表单的链接的容器 -->
                             <div class="heading">
                                 <h2>登录</h2>
@@ -20,13 +20,13 @@
                             <div class="actual-form">
                                 <!-- 包含用户名输入字段的容器 -->
                                 <div class="input-wrap">
-                                    <input id="name" type="text" minlength="4" autocomplete="off" required
+                                    <input id="name" type="text" 
                                         class="input-field" v-model="loginParams.username">
                                     <label for="name">Name</label>
                                 </div>
                                 <!-- 包含密码输入字段的容器 -->
                                 <div class="input-wrap">
-                                    <input id="password" type="password" autocomplete="off" required class="input-field"
+                                    <input id="password" type="password" class="input-field"
                                         v-model="loginParams.password">
                                     <label for="password">Password</label>
                                 </div>
@@ -37,9 +37,9 @@
                                     <a href="#/login">获取帮助</a>
                                 </p>
                             </div>
-                        </form>
+                        </div>
                         <!-- 注册表单 -->
-                        <form  autocomplete="off" class="sign-up-form">
+                        <div  class="form sign-up-form">
                             <!-- 包含标题和切换登录表单的链接的容器 -->
                             <div class="heading">
                                 <h2>注册</h2>
@@ -50,13 +50,13 @@
                             <div class="actual-form">
                                 <!-- 包含用户名输入字段的容器 -->
                                 <div class="input-wrap">
-                                    <input id="sign-name" type="text" minlength="4" autocomplete="off" required
+                                    <input id="sign-name" type="text" 
                                         class="input-field" v-model="registerParams.username">
                                     <label for="sign-name">Name</label>
                                 </div>
                                 <!-- 包含电子邮件输入字段的容器 -->
                                 <div class="input-wrap">
-                                    <input type="password" v-model="registerParams.password" id="sign-email" autocomplete="off" required class="input-field">
+                                    <input type="password" v-model="registerParams.password" id="sign-email"  class="input-field">
                                     <label for="sign-email">Password</label>
                                 </div>
                                 <!-- 包含密码输入字段的容器 -->
@@ -72,7 +72,7 @@
                                     <a href="#">服务条款</a>和<a href="#">隐私协议</a>
                                 </p>
                             </div>
-                        </form>
+                        </div>
                     </div>
                     <!-- 包含轮播图的容器 -->
                     <div class="carousel">
@@ -313,7 +313,7 @@ const moveSlider = (index) => {
     }
 
     /* 设置form的样式 */
-    form {
+    .form {
         max-width: 260px;
         /* 设置form的最大宽度为260px */
         width: 100%;
@@ -337,7 +337,7 @@ const moveSlider = (index) => {
     }
 
     /* 设置.sign-up-form的样式 */
-    form.sign-up-form {
+    .form.sign-up-form {
         opacity: 0;
         /* 设置.sign-up-form的透明度为0 */
         pointer-events: none;
@@ -525,7 +525,7 @@ const moveSlider = (index) => {
 
 
     /* 当处于注册模式下的登录表单 */
-    main.sign-up-mode form.sign-in-form {
+    main.sign-up-mode .form.sign-in-form {
         /* 设置透明度为0 */
         opacity: 0;
         /* 禁用指针事件 */
@@ -533,7 +533,7 @@ const moveSlider = (index) => {
     }
 
     /* 当处于注册模式下的注册表单 */
-    main.sign-up-mode form.sign-up-form {
+    main.sign-up-mode .form.sign-up-form {
         /* 设置透明度为1 */
         opacity: 1;
         /* 启用指针事件 */
@@ -784,19 +784,19 @@ const moveSlider = (index) => {
         }
 
         /* 选择所有.sign-up-form元素 */
-        form.sign-up-form {
+        .form.sign-up-form {
             /* 向右偏移100% */
             transform: translateX(100%);
         }
 
         /* 选择所有.sign-up-mode元素下的.sign-in-form元素 */
-        main.sign-up-mode form.sign-in-form {
+        main.sign-up-mode .form.sign-in-form {
             /* 向左偏移100% */
             transform: translateX(-100%);
         }
 
         /* 选择所有.sign-up-mode元素下的.sign-up-form元素 */
-        main.sign-up-mode form.sign-up-form {
+        main.sign-up-mode .form.sign-up-form {
             /* 不偏移 */
             transform: translateX(0%);
         }
@@ -871,7 +871,7 @@ const moveSlider = (index) => {
         }
 
         /* 选择所有form元素 */
-        form {
+        .form {
             /* 上内边距为1rem，左右内边距为2rem，下内边距为1.5rem */
             padding: 1rem 2rem 1.5rem;
         }

@@ -48,6 +48,9 @@
                                 <template v-else-if="row.type === 'if' || row.type === 'else if' || row.type === 'else'">
                                     <RuleIf :rules="[row]" style="margin-top: 10px;" @update-rule="handleUpdate"></RuleIf>
                                 </template>
+                                <template v-else-if="row.type === 'while'">
+                                    <RuleWhile :rules="[row]" style="margin-top: 10px;" ></RuleWhile>
+                                </template>
                             </div>
                         </template>
                         <el-button @click="handleAddMethod(rule.body)" size="small" type="primary" link>添加动作</el-button>
@@ -264,8 +267,9 @@ import { onMounted, ref, watch } from 'vue';
 import { extractObjects } from '@/utils/rule.js'
 import api from '../../../api';
 import { useStore } from 'vuex';
-import { ifList, ifItem, elseIfItem, elseItem } from './init.js'
+import { ifList, ifItem, elseIfItem, elseItem, whileItem } from './init.js'
 import { deepCopy } from "../../../utils/deepCopy";
+import RuleWhile from './RuleWhile.vue';
 
 const emits = defineEmits(['updateRule'])
 const store = useStore()
@@ -366,6 +370,10 @@ const methodOptions = ref([
     {
         type: 'if',
         name: '条件规则'
+    },
+    {
+        type: 'while',
+        name: '循环规则'
     }
 ])
 const methodParams = ref({
@@ -390,6 +398,8 @@ const cancelAddMethod = () => {
 const handleChangeType = () => {
     if (methodParams.value.type === 'if') {
         methodParams.value = deepCopy(ifItem)
+    } else if (methodParams.value.type === 'while') {
+        methodParams.value = deepCopy(whileItem)
     } else {
         methodParams.value = {
             ...{

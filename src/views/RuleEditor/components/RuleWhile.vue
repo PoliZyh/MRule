@@ -39,6 +39,9 @@
                                 <template v-else-if="row.type === 'while'">
                                     <RuleWhile :rules="[row]" style="margin-top: 10px;"></RuleWhile>
                                 </template>
+                                <template v-else-if="row.type === 'if' || row.type === 'else if' || row.type === 'else'">
+                                    <RuleIf :rules="[row]" style="margin-top: 10px;" @update-rule="handleUpdate"></RuleIf>
+                                </template>
                             </div>
                         </template>
                         <el-button @click="handleAddMethod(rule.body)" size="small" type="primary" link>添加动作</el-button>
@@ -255,7 +258,8 @@ import { useStore } from 'vuex';
 import api from '../../../api';
 import { extractObjects } from '@/utils/rule.js'
 import { deepCopy } from '../../../utils/deepCopy';
-import { whileItem } from './init';
+import { whileItem, ifItem } from './init';
+import RuleIf from './RuleIf.vue';
 
 const showConditionDialog = ref(false)
 const selectedConditions = ref([])
@@ -346,6 +350,10 @@ const methodOptions = ref([
     {
         type: 'while',
         name: '循环规则'
+    },
+    {
+        type: 'if',
+        name: '条件规则'
     }
 ])
 const methodParams = ref({
@@ -461,6 +469,8 @@ const cancelAddMethod = () => {
 const handleChangeType = () => {
     if (methodParams.value.type === 'while') {
         methodParams.value = deepCopy(whileItem)
+    } else if (methodParams.value.type === 'if') {
+        methodParams.value = deepCopy(ifItem)
     } else {
         methodParams.value = {
             ...{
@@ -540,6 +550,11 @@ const confirmAddCondition = () => {
     clearOption()
 }
 
+const handleUpdate = (newRule) => {
+    
+    selectedBody.value.splice(1, 0, newRule)
+    
+}
 
 onMounted(() => {
     getFiles()
