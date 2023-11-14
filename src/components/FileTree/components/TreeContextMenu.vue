@@ -4,10 +4,10 @@
         <div class="ctx-item" @click="handleCreateFile($event, '文件')" v-show="activeNode.isFolder || activeNode === '' || Object.keys(activeNode).length === 0">新建文件</div>
         <div class="ctx-item" @click="handleDelete()" v-show="activeNode && activeNode.id">删除</div>
     </div>
-    <el-dialog v-model="isShowDialog" :title="'创建' + dialogTitle">
+    <el-dialog v-model="isShowDialog" :title="'创建' + dialogTitle" @click="handleStop">
         <el-form>
             <el-form-item :label="'请输入' + dialogTitle + '名'">
-                <el-input v-model="inputName"></el-input>
+                <el-input v-model="inputName" @click="handleInput"></el-input>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -70,6 +70,10 @@ const handleCreateFile = (e, title) => {
     isFolder.value = 0
 }
 
+const handleStop = (e) => {
+    e.stopPropagation()
+}
+
 const handleDelete = async () => {
     if (!props.activeNode.id) {
         return
@@ -87,6 +91,10 @@ const handleDelete = async () => {
 
 const handleCancel = () => {
     isShowDialog.value = false
+}
+
+const handleInput = (e) => {
+    e.stopPropagation()
 }
 
 const handleConfirm = async () => {
@@ -107,6 +115,7 @@ const handleConfirm = async () => {
         })
         if (res.code === 200) {
             emits('refreshTree')
+            emits('update:isShow', false)
         }
     } catch {}
     isShowDialog.value = false
