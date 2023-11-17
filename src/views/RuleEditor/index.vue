@@ -6,6 +6,7 @@
                 <el-button icon="CirclePlus" @click="handleAddIf">添加条件规则</el-button>
                 <el-button icon="CirclePlus" @click="handleAddWhile">添加循环规则</el-button>
                 <el-button icon="ScaleToOriginal" @click="handleShowRun">快速测试</el-button>
+                <el-button icon="Plus" @click="handleAddTemplate">反诈事模版导入</el-button>
             </div>
             <div class="re-left-bodyer">
                 <template v-if="editor.length === 0">
@@ -48,6 +49,21 @@
                 </el-row>
             </template>
         </el-dialog>
+        <el-dialog title="反诈事模版导入" widht="40%" v-model="isShowTemplate">
+            <el-form>
+                <el-form-item label="凌晨转账或取款"><el-button @click="handleConfifmAddTemplate(0)">添加此模版</el-button></el-form-item>
+                <el-form-item label="与职业不符合的交易"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item label="与年龄不符合的交易"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item label="快进快出，账上无余款"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item label="涉案账户，警银联动"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item label="进出的交易涉及到各大省市"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item label="线上游戏、赌博等的返点返钱，不正当交易"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item label="上游账户不正常"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item label="交易的对象涉及人数很多"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item label="用途是退款"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item label="长期不使用的账户突然有极小/极大的资金转入"><el-button>添加此模版</el-button></el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
@@ -61,6 +77,7 @@ import RuleWhile from "./components/RuleWhile.vue";
 import { parseStringToStructure, mapStructureToString } from '@/utils/rule.js'
 import { ifItem, elseItem, whileItem } from "./components/init";
 import { deepCopy } from "../../utils/deepCopy";
+import templates from './components/template'
 
 const data = ref([]);
 const activeNode = ref({});
@@ -72,6 +89,7 @@ const isShowDialog = ref(false)
 const isShowRunDialog = ref(false)
 const ruleId = ref(0)
 const consoleData = ref([])
+const isShowTemplate = ref(false)
 
 const getEditorRuleContent = async () => {
     try {
@@ -153,6 +171,15 @@ const handleAddWhile = () => {
     editor.value = [deepCopy(whileItem)]
 }
 
+
+const handleAddTemplate = () => {
+    isShowTemplate.value = true
+}
+
+const handleConfifmAddTemplate = (index) => {
+    editor.value = [deepCopy(templates[index])]
+    isShowTemplate.value = false
+}
 
 onMounted(() => {
     getFileTree()

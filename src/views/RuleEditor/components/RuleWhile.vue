@@ -354,6 +354,14 @@ const methodOptions = ref([
     {
         type: 'if',
         name: '条件规则'
+    },
+    {
+        type: 'goto',
+        name: '跳转'
+    },
+    {
+        type: 'point',
+        name: '决策点'
     }
 ])
 const methodParams = ref({

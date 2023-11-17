@@ -214,6 +214,13 @@ export default {
             method: "POST",
             data: params 
         })
+    },
+    // 2.7.11 项规则集中添加规则
+    addRuleToSetRequest(params) {
+        return request({
+            url: "/rule/joinToSet",
+            method: "POST",
+            data: params
+        })
     }
-
 }

@@ -31,15 +31,15 @@
                 <div class="b-cards">
                     <div class="b-card card1">
                         <div class="img-box"></div>
-                        <p>文字</p>
+                        <h4>智能决策</h4>
                     </div>
                     <div class="b-card card2">
                         <div class="img-box"></div>
-                        <p>文字</p>
+                        <p>AST设计</p>
                     </div>
                     <div class="b-card card3">
                         <div class="img-box"></div>
-                        <p>文字</p>
+                        <p>Redis高性能</p>
                     </div>
                     <div class="b-card card4">
                         <div class="img-box"></div>

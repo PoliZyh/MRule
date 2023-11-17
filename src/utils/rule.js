@@ -23,8 +23,10 @@ export const extractObjects = (data) => {
 
   function traverse(nodes) {
     for (let node of nodes) {
-      if (node.isFolder && node.children) {
-        traverse(node.children)
+      if (node.isFolder) {
+        if (node.children && node.children.length > 0) {
+            traverse(node.children)
+        }
       } else {
         result.push(node);
       }
