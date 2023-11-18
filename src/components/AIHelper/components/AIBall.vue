@@ -15,10 +15,8 @@
                     </div>
                 </div>
                 <div class="chat-list" v-else>
+                    <UChatListItem></UChatListItem>
                     <RChatListItem></RChatListItem>
-                    <UChatListItem></UChatListItem>
-                    <UChatListItem></UChatListItem>
-                    <UChatListItem></UChatListItem>
                 </div>
             </div>
             <div class="chat-input">

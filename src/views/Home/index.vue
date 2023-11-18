@@ -30,20 +30,26 @@
                 </div>
                 <div class="b-cards">
                     <div class="b-card card1">
-                        <div class="img-box"></div>
+                        <div class="img-box box-1">
+
+                        </div>
                         <h4>智能决策</h4>
+                        <p>AI智能助手、生成判定规则、优化现有规则，全面满足你的智能需求！</p>
                     </div>
                     <div class="b-card card2">
-                        <div class="img-box"></div>
-                        <p>AST设计</p>
+                        <div class="img-box box-2"></div>
+                        <h4>SAST设计</h4>
+                        <p>解析速度优化、复杂性更低，SAST渲染更快更易于维护！</p>
                     </div>
                     <div class="b-card card3">
-                        <div class="img-box"></div>
-                        <p>Redis高性能</p>
+                        <div class="img-box box-3"></div>
+                        <h4>Redis高性能</h4>
+                        <p>Redis为您带来最高的优化效率！</p>
                     </div>
                     <div class="b-card card4">
-                        <div class="img-box"></div>
-                        <p>文字</p>
+                        <div class="img-box box-4"></div>
+                        <h4>决策设计</h4>
+                        <p>可视化决策设计，用户体验极佳！</p>
                     </div>
                 </div>
             </div>
@@ -282,11 +288,27 @@ onMounted(() => {
                     box-shadow: 0 0 20px 0px rgb(223, 223, 223);
                     padding: 15px;
                     opacity: 0;
+                    h4 {
+                        margin-top: 15px;
+                    }
+
                     .img-box {
                         width: 100%;
                         height: 40%;
-                        background-color: rgb(193, 193, 193);
+                        background-size: cover;
                         border-radius: 10px;
+                    }
+                    .box-1 {
+                        background-image: url('./img/1.jpg');
+                    }
+                    .box-2 {
+                        background-image: url('./img/2.jpg');
+                    }
+                    .box-3 {
+                        background-image: url('./img/3.png');
+                    }
+                    .box-4 {
+                        background-image: url('./img/4.png');
                     }
                     p {
                         margin-top: 15px;

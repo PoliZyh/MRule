@@ -1,7 +1,7 @@
 <template>
     <div class="u-chat-list-item">
         <div class="left">
-            <p>dasdasdasdasdasdasdasdasdasdasdasdasdasd你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好</p>
+            <p>我该如何编辑规则？</p>
         </div>
         <div class="right">
             <div class="icon-box">

@@ -1,12 +1,10 @@
 <template>
     <div class="decision-set-page">
         <div class="ds-left">
-            <template v-if="ruleSet.length > 0">
-                <div class="ds-left-header">
-                    <el-button @click="handleAddRule">添加规则</el-button>
-                    <el-button @click="handleRun">运行规则集</el-button>
-                </div>
-            </template>
+            <div class="ds-left-header">
+                <el-button @click="handleAddRule">添加规则</el-button>
+                <el-button @click="handleRun">运行规则集</el-button>
+            </div>
             <el-table :data="ruleSet" style="width: 100%;">
                 <el-table-column prop="id" label="ID" width="80" />
                 <el-table-column prop="ruleName" label="规则名" width="180" />

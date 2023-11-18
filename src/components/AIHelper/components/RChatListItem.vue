@@ -6,7 +6,7 @@
             </div>
         </div>
         <div class="right">
-            <p>dasdasdasdasdasdasdasdasdasdasdasdasdasd你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好</p>
+            <p>要如何编辑规则？<br> 1. 打开规则设计面板 <br> 2. 选择您的规则模版即可编辑</p>
         </div>
     </div>
 </template>

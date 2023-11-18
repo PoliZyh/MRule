@@ -87,11 +87,11 @@ export function mapStructureToString(structure) {
                   const received = `#${item.received.libId}#${item.received.varName}#`;
                   const addStr = mapConditionToString(item.calculate)
 
-                  return `#${received}=${addStr}`;
+                  return `${received}=${addStr};`;
               } else if (item.type === "print") {
                   const received = `#${item.received.libId}#${item.received.varName}#`;
 
-                  return "$" + `${received}$`;
+                  return "$" + `${received}$;`;
               }
 
               return "";
@@ -231,7 +231,7 @@ export function parseStringToStructure(inputString) {
                       operator: element,
                       right: {
                           libId: mtr[1],
-                          libName: mtr[2]
+                          varName: mtr[2]
                       }
                   })
               } else if (element === '') {
@@ -242,12 +242,12 @@ export function parseStringToStructure(inputString) {
                   resConditions.push({
                       left: {
                           libId: mtl[1],
-                          libName: mtl[2]
+                          varName: mtl[2]
                       },
                       operator: element,
                       right: {
                           libId: mtr[1],
-                          libName: mtr[2]
+                          varName: mtr[2]
                       }
                   })
               }
@@ -298,7 +298,7 @@ export function parseStringToStructure(inputString) {
                       operator: element,
                       right: {
                           libId: mtr[1],
-                          libName: mtr[2]
+                          varName: mtr[2]
                       }
                   })
               } else if (element === '') {
@@ -309,12 +309,12 @@ export function parseStringToStructure(inputString) {
                   resConditions.push({
                       left: {
                           libId: mtl[1],
-                          libName: mtl[2]
+                          varName: mtl[2]
                       },
                       operator: element,
                       right: {
                           libId: mtr[1],
-                          libName: mtr[2]
+                          varName: mtr[2]
                       }
                   })
               }
