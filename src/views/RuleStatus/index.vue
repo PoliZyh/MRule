@@ -11,13 +11,14 @@
                 <el-table-column prop="ruleName" label="规则名" width="180" />
                 <el-table-column prop="createTime" label="创建时间" width="145" />
                 <el-table-column prop="updateTime" label="更新时间" width="145" />
-                <el-table-column label="操作" width="220" fixed="right">
+                <el-table-column label="操作" width="260" fixed="right">
                     <template #="{ row }">
                         <el-button 
                         size="small"
                         @click="changeRuleStatus(row.ruleId, row.status === 0 ? 1 : 0)">{{ row.status === 0 ? '已禁用' : '启用中' }}</el-button>
                         <el-button size="small" @click="handleViewHistory(row.ruleId)">历史</el-button>
                         <el-button size="small" @click="handleDeleteRule(row.ruleId)">删除</el-button>
+                        <el-button size="small" @click="handleShowAPI(row.ruleId)">API</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -41,6 +42,17 @@
                 <el-table-column prop="event" label="修改事件" width="245" />
             </el-table>
         </el-dialog>
+        <el-dialog title="API接口" v-model="dialogAPI" width="70%">
+            <el-form>
+                <el-form-item label="接口地址">
+                    <p style="background-color: rgb(237, 237, 237);padding: 0 10px;">http://153.21.34.148/{{ hash }}</p>
+                </el-form-item>
+                <el-form-item label="接口方法">POST</el-form-item>
+                <el-form-item label="接口参数">
+                    <el-button link type="primary">请查看接口文档</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
@@ -56,6 +68,9 @@ const pageSize = ref(10)
 const store = useStore()
 const projectId = store.state.project.projectId
 const dialogTableVisible = ref(false)
+const dialogAPI = ref(false)
+const selectId = ref('')
+const hash = ref('')
 
 const tableData = ref([
     {
@@ -131,6 +146,20 @@ const tableData = ref([
 ])
 const historyTableData = ref([])
 
+function stringToArrayBuffer(str) {
+  const encoder = new TextEncoder('utf-8');
+  return encoder.encode(str);
+}
+
+// 计算 SHA-256 哈希值
+async function sha256(str) {
+  const buffer = stringToArrayBuffer(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
 const getTableData = async () => {
     try {
         const res = await api.getRuleStatusListRequest({
@@ -158,6 +187,12 @@ const changeRuleStatus = async (ruleId, status) => {
             addRuleHistory(projectId, ruleId, userInfo.data.userAccount, getCurTime(), status ===0 ? '禁用了状态' : '启用状态')
         }
     } catch {}
+}
+
+const handleShowAPI = async (id) => {
+    selectId.value = id
+    hash.value = await sha256(selectId.value)
+    dialogAPI.value = true
 }
 
 const handleViewHistory = async (ruleId) => {

@@ -1,10 +1,10 @@
 <template>
     <div class="ai-ball-box" @click="handleClickOnAiBall">
         <div class="chat-box" v-if="props.isShowChat">
-            <div class="chat">
+            <div class="chat" ref="chatDiv">
                 <div class="close-point" @click="handleCloseChat"></div>
                 <div class="empty-list" v-if="chatList.length === 0">
-                    <div class="empty-item">
+                    <div class="empty-item" @click="handleUserMule('如何使用MRule？')">
                         如何使用MRule？
                     </div>
                     <div class="empty-item">
@@ -15,20 +15,22 @@
                     </div>
                 </div>
                 <div class="chat-list" v-else>
-                    <UChatListItem></UChatListItem>
-                    <RChatListItem></RChatListItem>
+                    <component 
+                    v-for="item in chatList"
+                    :key="item.msg"
+                    :is="item.type === 'r' ? RChatListItem : UChatListItem " :msg="item.msg"></component>
                 </div>
             </div>
             <div class="chat-input">
                 <el-input 
                 type="textarea" 
-                v-model="chatTxt" 
                 @click="handleInput" 
                 ref="elInputRef"
                 :autosize="{ minRows: 1, maxRows: 1}"
                 style="width: 80%;"
+                v-model="uMessage"
                 ></el-input>
-                <el-button icon="Position" class="btn"></el-button>
+                <el-button icon="Position" class="btn" @click="handlePost" ></el-button>
             </div>
         </div>
         <div class="before-active" v-else>
@@ -44,21 +46,9 @@ import UChatListItem from './UChatListItem.vue'
 
 let chatTxt = ref('')
 const elInputRef = ref()
-const chatList = ref([
-    {
-        type: 'r',
-        msg: '你好呀'
-    },
-    {
-        type: 'u',
-        msg: 'hi'
-    },
-    {
-        type: 'r',
-        msg: 'hihi'
-    }
-])
-// const chatList = ref([])
+const chatList = ref([])
+const uMessage = ref('')
+const chatDiv = ref()
 
 const props = defineProps({
     isShowChat: {
@@ -81,8 +71,59 @@ const handleInput = (e) => {
     elInputRef.value.focus()
 }
 
+const handleUserMule = async (str) => {
+    chatList.value.push({
+        type: 'u',
+        msg: str
+    })
+    handleRobotWait()
+    await wait()
+    chatList.value[chatList.value.length - 1].msg = `
+        1. 通过查看参考文档进行使用。
+        2. 通过MRule官网视频进行学习使用。
+        3. 咨询开发者进行使用。
+    `
+    scrollToBottom()
+}
 
+const handleRobotWait = () => {
+    chatList.value.push({
+        type: 'r',
+        msg: '机器人正在思考中...'
+    })
+    scrollToBottom()
+}
 
+const wait = () => {
+    return new Promise((resolve) => {
+        const timer = setTimeout(() => {
+            if (timer) clearTimeout(timer)
+            resolve()
+        }, 3000)
+    })
+}
+
+const handlePost = async () => {
+    chatList.value.push({
+        type: 'u',
+        msg: uMessage.value
+    })
+    uMessage.value = ''
+    handleRobotWait()
+    await wait()
+    chatList.value[chatList.value.length - 1].msg = `
+        1. 您可以通过揣拽制定规则模版。
+        2. 您可以使用反诈事模版。
+        3. 您可以通过DSL进行规则编辑。
+    `
+    scrollToBottom()
+}
+
+const scrollToBottom = () => {
+    if (chatDiv.value) {
+        chatDiv.value.scrollTop = chatDiv.value.scrollHeight;
+    }
+}
 </script>
 
 <style scoped lang="scss">
@@ -128,6 +169,7 @@ const handleInput = (e) => {
             flex: 8;
             position: relative;
             padding-top: 25px;
+            height: 400px;
             // padding-bottom: 40px;
             .close-point {
                 position: absolute;

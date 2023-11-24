@@ -1,4 +1,5 @@
-export const ifList = [
+export const ifList = 
+[
     {
         type: "if",
         conditions: [
@@ -44,7 +45,8 @@ export const elseIfItem = {
 }
 
 
-export const whileItem = {
+export const whileItem = 
+{
     type: "while",
     conditions: [],
     body: []

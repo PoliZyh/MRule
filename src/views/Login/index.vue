@@ -30,6 +30,15 @@
                                         v-model="loginParams.password">
                                     <label for="password">Password</label>
                                 </div>
+                                <div class="input-wrap">
+                                    <input type="text"
+                                    id="code"
+                                    class="input-field"
+                                    v-model="loginParams.code"
+                                    >
+                                    <label for="code">Code</label>
+                                    <canvas class="code-canvas" ref="codeCanvas" @click="drawCode"></canvas>
+                                </div>
                                 <!-- 登录表单的提交按钮 -->
                                 <Button class="sign-btn" @click="handleLogin">SIGN IN</Button>
                                 <!-- 忘记密码的链接 -->
@@ -123,6 +132,7 @@ const loginParams = reactive({
 const registerParams = reactive({
     username: '',
     password: '',
+    code: '',
     checkPassword: ''
 })
 const router = useRouter()
@@ -152,6 +162,101 @@ const handleRegister = async () => {
     }
 }
 
+const codeCanvas = ref()
+const correctCode = ref([]) // 正确的验证码
+
+// 渲染验证码
+const drawCode = () => {
+    const canvasWidth = codeCanvas.value?.clientWidth || 0
+    const canvasHeight = codeCanvas.value?.clientHeight || 0
+    const context = codeCanvas.value?.getContext('2d')
+    const sCode = "a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,W,X,Y,Z,1,2,3,4,5,6,7,8,9,0";
+    const aCode = sCode.split(",");
+    const alength = aCode.length;
+
+    // 清空画布
+    context?.clearRect(0, 0, canvasWidth * 3, canvasHeight * 3);
+
+    // 清空正确的验证码
+    correctCode.value.length = 0
+
+    // 生成随机颜色
+    const randomColor = () => {
+        const r = Math.floor(Math.random() * 256)
+        const g = Math.floor(Math.random() * 256)
+        const b = Math.floor(Math.random() * 256)
+        return `rgb(${r},${g},${b})`
+    }
+
+    // 生成四个随机字符
+    for(let i = 0; i < 4; i++) {
+        const indexCode = Math.floor(Math.random() * alength) // 获取随机数的索引值
+        const deg = (Math.random() * 30 * Math.PI) / 180 // 获取小于30度随机的弧度值
+        const txt = aCode[indexCode] // 获取该字符
+        correctCode.value.push(txt) // 保存正确的验证码
+
+        const x = 10 + i * 60 // 字符的x坐标
+        const y = 90 + Math.random() * 10 // 字符的y坐标
+
+        if (context) {
+            context.font = "bold 6rem 微软雅黑" // 设置字体
+            context.translate(x, y);
+            context.rotate(deg);
+            context.fillStyle = randomColor();
+            context.fillText(txt, 0, 0);
+            context.rotate(-deg);
+            context.translate(-x, -y);
+        } else {
+            ElMessage({
+                message: '验证码画布创建失败',
+                type: 'error',
+            })
+        }
+    }
+
+    //验证码上显示6条线条
+    for (var i = 0; i <= 5; i++) {
+        if (context) {
+            context.strokeStyle = randomColor();
+            context.beginPath();
+            context.moveTo(
+            Math.random() * canvasWidth * 2 + 30,
+            Math.random() * canvasHeight * 2 + 30
+            );
+            context.lineTo(
+            Math.random() * canvasWidth * 2 + 30,
+            Math.random() * canvasHeight * 2 + 30
+            );
+            context.stroke();
+        } else {
+            ElMessage({
+                message: '验证码画布创建失败',
+                type: 'error',
+            })
+        }
+
+      }
+      //验证码上显示31个小点
+      for (var i = 0; i <= 30; i++) {
+        if (context) {
+            context.strokeStyle = randomColor();
+            context.beginPath();
+            var x = Math.random() * canvasWidth * 2 + 30;
+            var y = Math.random() * canvasHeight * 2 + 30;
+            context.moveTo(x, y);
+            context.lineTo(x + 1, y + 1);
+            context.stroke();
+        } else {
+            ElMessage({
+                message: '验证码画布创建失败',
+                type: 'error',
+            })
+        }
+      }
+
+}
+
+
 onBeforeUnmount(() => {
     if (vantaEffect.value) {
         vantaEffect.value.destroy()
@@ -159,6 +264,7 @@ onBeforeUnmount(() => {
 })
 
 onMounted(() => {
+    drawCode()
     vantaEffect.value = NET({
         el: loginPageRef.value,
         mouseControls: true,
@@ -608,7 +714,12 @@ const moveSlider = (index) => {
         /* 设置过渡效果 */
         transition: opacity 0.3s, transform 0.5s;
     }
-
+    .code-canvas {
+        position: absolute;
+        width: 100px;
+        right: 0;
+        bottom: -5px;
+    }
     /* 选择所有.img-1元素 */
     .img-1 {
         /* 设置向上平移50像素 */

@@ -1,7 +1,7 @@
 <template>
     <div class="u-chat-list-item">
         <div class="left">
-            <p>我该如何编辑规则？</p>
+            <p>{{ msg }}</p>
         </div>
         <div class="right">
             <div class="icon-box">
@@ -14,7 +14,12 @@
 
 
 <script setup>
-
+const props = defineProps({
+    msg: {
+        type: String,
+        default: ''
+    }
+})
 </script>
 
 
@@ -24,12 +29,17 @@
     display: flex;
     .left {
         flex: 1;
-        padding: 5px 10px;
+        width: 100%;
         margin-left: 10px;
-        background-color: #409eff;
-        border-radius: 10px;
+        display: flex;
+        justify-content: flex-end;
+        
         p {
-            width: 180px;
+            border-radius: 10px;
+            padding: 5px 10px;
+            background-color: #409eff;
+            width: fit-content;
+            max-width: 180px;
             color: white;
             overflow-wrap: break-word;
             word-wrap: break-word;

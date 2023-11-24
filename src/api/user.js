@@ -8,7 +8,6 @@ export default {
         .join('&');
         return request({
             method: 'POST',
-            // url: `/user/login?${queryString}`,
             url: '/user/login',
             data: params
         })

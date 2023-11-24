@@ -27,12 +27,23 @@ let whichShow = ref(0)
 
 onMounted(() => {
     const path = route.fullPath
-    const index = routeMap.findIndex((item) => item.routePath === path)
+    const index = constantRouteMap.findIndex((item) => path.includes(item.routePath))
     if (index) {
         whichShow.value = index
     }
 })
 const routeMap = [
+    {
+        label: '我的项目',
+        routePath: '/projects/project-list'
+    },
+    {
+        label: '使用文档',
+        routePath: '/projects/docs?title=欢迎'
+    }
+]
+
+const constantRouteMap = [
     {
         label: '我的项目',
         routePath: '/projects/project-list'

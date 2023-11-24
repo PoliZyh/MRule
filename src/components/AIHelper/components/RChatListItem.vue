@@ -6,13 +6,18 @@
             </div>
         </div>
         <div class="right">
-            <p>要如何编辑规则？<br> 1. 打开规则设计面板 <br> 2. 选择您的规则模版即可编辑</p>
+            <p>{{ msg }}</p>
         </div>
     </div>
 </template>
 
 <script setup>
-
+const props = defineProps({
+    msg: {
+        type: String,
+        default: ''
+    }
+})
 </script>
 
 
@@ -35,12 +40,15 @@
     }
     .right {
         flex: 1;
-        padding: 5px 10px;
+        
         margin-left: 10px;
-        background-color: #409eff;
-        border-radius: 10px;
+        
         p {
-            width: 180px;
+            background-color: #409eff;
+            padding: 5px 10px;
+            border-radius: 10px;
+            width: fit-content;
+            max-width: 180px;
             color: white;
             overflow-wrap: break-word;
             word-wrap: break-word;

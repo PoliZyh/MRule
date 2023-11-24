@@ -70,9 +70,12 @@ export default {
     },
     // 2.4.4 查看规则的历史记录
     getAllRuleHistoryRequest(params) {
+        const queryString = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
         return request({
-            url: "/rule/ruleHistory/get",
-            method: "GET",
+            url: `/rule/ruleHistory/get`,
+            method: "POST",
             data: params
         })
     },

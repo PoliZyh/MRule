@@ -7,6 +7,7 @@
                 <el-button icon="CirclePlus" @click="handleAddWhile">添加循环规则</el-button>
                 <el-button icon="ScaleToOriginal" @click="handleShowRun">快速测试</el-button>
                 <el-button icon="Plus" @click="handleAddTemplate">反诈事模版导入</el-button>
+                <el-button icon="Operation" @click="handleDSL">DSL编辑器</el-button>
             </div>
             <div class="re-left-bodyer">
                 <template v-if="editor.length === 0">
@@ -49,27 +50,32 @@
                 </el-row>
             </template>
         </el-dialog>
-        <el-dialog title="反诈事模版导入" widht="40%" v-model="isShowTemplate">
+        <el-dialog :title="'反诈事模版导入 更新于' + updateTime" widht="40%" v-model="isShowTemplate">
             <el-form>
-                <el-form-item label="凌晨转账或取款"><el-button @click="handleConfifmAddTemplate(0)">添加此模版</el-button></el-form-item>
-                <el-form-item label="与职业不符合的交易"><el-button>添加此模版</el-button></el-form-item>
-                <el-form-item label="与年龄不符合的交易"><el-button>添加此模版</el-button></el-form-item>
-                <el-form-item label="快进快出，账上无余款"><el-button>添加此模版</el-button></el-form-item>
-                <el-form-item label="涉案账户，警银联动"><el-button>添加此模版</el-button></el-form-item>
-                <el-form-item label="进出的交易涉及到各大省市"><el-button>添加此模版</el-button></el-form-item>
-                <el-form-item label="线上游戏、赌博等的返点返钱，不正当交易"><el-button>添加此模版</el-button></el-form-item>
-                <el-form-item label="上游账户不正常"><el-button>添加此模版</el-button></el-form-item>
-                <el-form-item label="交易的对象涉及人数很多"><el-button>添加此模版</el-button></el-form-item>
-                <el-form-item label="用途是退款"><el-button>添加此模版</el-button></el-form-item>
-                <el-form-item label="长期不使用的账户突然有极小/极大的资金转入"><el-button>添加此模版</el-button></el-form-item>
+                <el-form-item 
+                v-for="item in showTemplate" 
+                :label="item.label"
+                :key="item.label">
+                    <el-button @click="handleConfifmAddTemplate(0)" size="small">添加此模版</el-button>
+                    <el-tag size="small" style="margin-left: 10px;" :type="item.robot ? 'success' : ''">{{ item.robot ? 'AI' : '人工' }}</el-tag>
+                    <el-tooltip
+                        class="box-item"
+                        effect="dark"
+                        :content="item.from.join(' ')"
+                        placement="top"
+                    >
+                        <el-button size="small" link type="primary" style="margin-left: 10px;">数据来源</el-button>
+                    </el-tooltip>
+                </el-form-item>
             </el-form>
         </el-dialog>
+        <DSL ref="DSLRef" v-model:data="editor"></DSL>
     </div>
 </template>
 
 <script setup>
 import FileTrees from "@/components/FileTree/index.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import api from "../../api";
 import { useStore } from "vuex";
 import RuleIf from "./components/RuleIf.vue";
@@ -78,6 +84,8 @@ import { parseStringToStructure, mapStructureToString } from '@/utils/rule.js'
 import { ifItem, elseItem, whileItem } from "./components/init";
 import { deepCopy } from "../../utils/deepCopy";
 import templates from './components/template'
+import DSL from "./components/DSL.vue";
+import { getCurTime } from '@/utils/time.js'
 
 const data = ref([]);
 const activeNode = ref({});
@@ -90,6 +98,133 @@ const isShowRunDialog = ref(false)
 const ruleId = ref(0)
 const consoleData = ref([])
 const isShowTemplate = ref(false)
+const DSLRef = ref()
+const allTemplate = ref([
+    {
+        label: '凌晨转账或取款',
+        robot: true,
+        from: ['凌晨转账遭遇诈骗', '凌晨转账涉疑', '凌晨取款等'],
+        index: 0,
+    },
+    {
+        label: '与职业不符合的交易',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 1,
+    },
+    {
+        label: '与年龄不符合的交易',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 2
+    },
+    {
+        label: '快进快出，账上无余款',
+        robot: false,
+        from: ['1', '2', '3'],
+        index: 3
+    },
+    {
+        label: '涉案账户，警银联动',
+        robot: false,
+        from: ['1', '2', '3'],
+        index: 4
+    },
+    {
+        label: '进出的交易涉及到各大省市',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 5
+    },
+    {
+        label: '线上游戏、赌博等的返点返钱，不正当交易',
+        robot: false,
+        from: ['1', '2'],
+        index: 6
+    },
+    {
+        label: '上游账户不正常',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 7
+    },
+    {
+        label: '交易的对象涉及人数很多',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 8
+    },
+    {
+        label: '用途是退款',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 9
+    },
+    {
+        label: '长期不使用的账户突然有极小/极大的资金转入',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 10,
+    },
+    {
+        label: '交易金额很大',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 11,
+    },
+    {
+        label: '交易金额很小',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 12,
+    },
+    {
+        label: '交易金额很大，但交易对象是个人',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 13,
+    },
+    {
+        label: '交易金额很小，但交易对象是企业',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 14,
+    },
+    {
+        label: '交易金额很大，交易对象是企业',
+        robot: true,
+        from: ['1', '2', '3'],
+        index: 15
+    }
+])
+const showTemplate = ref([])
+const updateTime = ref('')
+let timer = null
+
+const getRandomElements = (array, n) => {
+    updateTime.value = getCurTime()
+    const shuffledArray = array.slice(); // 复制数组以避免修改原数组
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray.slice(0, n);
+}
+
+const scheduleRandomExtraction = () => {
+    showTemplate.value = getRandomElements(allTemplate.value, 7);
+  timer = setInterval(() => {
+    showTemplate.value = getRandomElements(allTemplate.value, 7);
+  }, 10000); // 10秒间隔
+}
+
+onMounted(() => {
+    scheduleRandomExtraction()
+})
+
+onUnmounted(() => {
+    clearInterval(timer)
+})
 
 const getEditorRuleContent = async () => {
     try {
@@ -107,6 +242,10 @@ const getEditorRuleContent = async () => {
 
 const handleAddIf = () => {
     editor.value = [deepCopy(ifItem), deepCopy(elseItem)]
+}
+
+const handleDSL = () => {
+    DSLRef.value.handleShow(true)
 }
 
 watch(() => activeNode.value,
