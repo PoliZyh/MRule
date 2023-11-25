@@ -27,8 +27,9 @@ watch(() => props.data,
 })
 const internalValue = ref([])
 
-watch(internalValue.value,
+watch(() => internalValue.value,
 () => {
+
     emits('update:data', internalValue.value)
 })
 

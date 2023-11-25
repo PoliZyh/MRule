@@ -40,7 +40,7 @@
                                     <canvas class="code-canvas" ref="codeCanvas" @click="drawCode"></canvas>
                                 </div>
                                 <!-- 登录表单的提交按钮 -->
-                                <Button class="sign-btn" @click="handleLogin">SIGN IN</Button>
+                                <button class="sign-btn" @click="handleLogin">SIGN IN</button>
                                 <!-- 忘记密码的链接 -->
                                 <p class="text">忘记密码?
                                     <a href="#/login">获取帮助</a>
