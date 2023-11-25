@@ -45,7 +45,7 @@
         <el-dialog title="API接口" v-model="dialogAPI" width="70%">
             <el-form>
                 <el-form-item label="接口地址">
-                    <p style="background-color: rgb(237, 237, 237);padding: 0 10px;">http://153.21.34.148/{{ hash }}</p>
+                    <p style="background-color: rgb(237, 237, 237);padding: 0 10px;">http://http://121.41.61.157/{{ hash }}</p>
                 </el-form-item>
                 <el-form-item label="接口方法">POST</el-form-item>
                 <el-form-item label="接口参数">
