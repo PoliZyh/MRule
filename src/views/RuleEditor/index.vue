@@ -44,9 +44,25 @@
                 
             </template>
             <template v-else>
-                <h4 style="margin-bottom: 10px;">控制台</h4>
+                <h4 style="margin-bottom: 10px;">控制台</h4> 
                 <el-row v-for="line in consoleData" :key="line" style="margin-bottom: 5px;">
                     <p>> {{ line }}</p>
+                </el-row>
+                <h4 style="margin-top: 10px;">决策报告<el-button link type="primary" style="margin-left: 10px;">下载报告</el-button></h4>
+                <el-row style="margin-bottom: 5px;">
+                    > { 
+                </el-row> 
+                <el-row style="margin-bottom: 5px;">
+                    >     "ruleId": 7,
+                </el-row> 
+                <el-row style="margin-bottom: 5px;">
+                    >     "evaluation_value": 0.2,
+                </el-row> 
+                <el-row style="margin-bottom: 5px;">
+                    >     "log": "数据不通过规则校验 定性为可疑账户"
+                </el-row>
+                <el-row style="margin-bottom: 5px;">
+                    > }
                 </el-row>
             </template>
         </el-dialog>
@@ -70,6 +86,9 @@
             </el-form>
         </el-dialog>
         <DSL ref="DSLRef" v-model:data="editor"></DSL>
+        <el-dialog title="该模版参数已调整" v-model="tIsShow">
+            <p>该模版参数 $varName: 22:00$ 于[11.26 08:23] 调整为 $varName: 21:00$ </p>
+        </el-dialog>
     </div>
 </template>
 
@@ -87,6 +106,7 @@ import templates from './components/template'
 import DSL from "./components/DSL.vue";
 import { getCurTime } from '@/utils/time.js'
 
+const tIsShow = ref(false)
 const data = ref([]);
 const activeNode = ref({});
 const store = useStore()
@@ -213,8 +233,11 @@ const getRandomElements = (array, n) => {
 
 const scheduleRandomExtraction = () => {
     showTemplate.value = getRandomElements(allTemplate.value, 7);
-  timer = setInterval(() => {
+    showTemplate.value.splice(1, 0, allTemplate.value[0])
+    timer = setInterval(() => {
+    showTemplate.value = []
     showTemplate.value = getRandomElements(allTemplate.value, 7);
+    showTemplate.value.splice(1, 0, allTemplate.value[0])
   }, 10000); // 10秒间隔
 }
 
@@ -318,6 +341,7 @@ const handleAddTemplate = () => {
 const handleConfifmAddTemplate = (index) => {
     editor.value = [deepCopy(templates[index])]
     isShowTemplate.value = false
+    tIsShow.value = true
 }
 
 onMounted(() => {

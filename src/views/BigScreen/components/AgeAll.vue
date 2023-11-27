@@ -1,7 +1,7 @@
 <template>
     <div class="age-all-box">
         <div class="title">
-            <p>用户年龄分布</p>
+            <p>受欺诈年龄分布</p>
             <img src="../images/dataScreen-title.png" alt="" />
         </div>
         <div class="charts" ref="chartRef"></div>

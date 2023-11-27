@@ -9,7 +9,6 @@
         <div class="left">
           <Tourist class="tourist"></Tourist>
           <Sex class="sex"></Sex>
-          <Work class="age"></Work>
         </div>
         <div class="center">
           <Map class="map"></Map>
