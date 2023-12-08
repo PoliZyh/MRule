@@ -2,12 +2,13 @@
     <div class="rule-editor-page">
         <div class="re-left">
             <div class="re-left-header">
-                <el-button icon="Check" @click="handleSave">保存</el-button>
-                <el-button icon="CirclePlus" @click="handleAddIf">添加条件规则</el-button>
-                <el-button icon="CirclePlus" @click="handleAddWhile">添加循环规则</el-button>
-                <el-button icon="ScaleToOriginal" @click="handleShowRun">快速测试</el-button>
-                <el-button icon="Plus" @click="handleAddTemplate">反诈事模版导入</el-button>
-                <el-button icon="Operation" @click="handleDSL">DSL编辑器</el-button>
+                <el-button icon="Check" @click="handleSave" size="small">保存</el-button>
+                <el-button icon="CirclePlus" @click="handleAddIf" size="small">添加条件规则</el-button>
+                <el-button icon="CirclePlus" @click="handleAddWhile" size="small">添加循环规则</el-button>
+                <el-button icon="ScaleToOriginal" @click="handleShowRun" size="small">快速测试</el-button>
+                <el-button icon="Plus" @click="handleAddTemplate" size="small">反诈事模版导入</el-button>
+                <el-button icon="Operation" @click="handleDSL" size="small">DSL编辑器</el-button>
+                <el-button icon="Operation" size="small" @click="handleOp">优化参数</el-button>
             </div>
             <div class="re-left-bodyer">
                 <template v-if="editor.length === 0">
@@ -27,39 +28,40 @@
         <el-dialog title="保存规则名为" width="30%" v-model="isShowDialog">
             <el-form>
                 <el-form-item label="规则名">
-                    <el-input v-model="ruleName" ></el-input>
+                    <el-input v-model="ruleName"></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
                 <span class="dialog-footer">
                     <el-button @click="isShowDialog = false">取消</el-button>
                     <el-button type="primary" @click="handleConfirmSave">
-                    确认
+                        确认
                     </el-button>
                 </span>
             </template>
         </el-dialog>
         <el-dialog title="快速测试" width="40%" v-model="isShowRunDialog">
             <template v-if="consoleData.length === 0">
-                
+
             </template>
             <template v-else>
-                <h4 style="margin-bottom: 10px;">控制台</h4> 
+                <h4 style="margin-bottom: 10px;">控制台</h4>
                 <el-row v-for="line in consoleData" :key="line" style="margin-bottom: 5px;">
                     <p>> {{ line }}</p>
                 </el-row>
-                <h4 style="margin-top: 10px;">决策报告<el-button link type="primary" style="margin-left: 10px;">下载报告</el-button></h4>
+                <h4 style="margin-top: 10px;">决策报告<el-button link type="primary" style="margin-left: 10px;">下载报告</el-button>
+                </h4>
                 <el-row style="margin-bottom: 5px;">
-                    > { 
-                </el-row> 
+                    > {
+                </el-row>
                 <el-row style="margin-bottom: 5px;">
-                    >     "ruleId": 7,
-                </el-row> 
+                    > "ruleId": 7,
+                </el-row>
                 <el-row style="margin-bottom: 5px;">
-                    >     "evaluation_value": 0.2,
-                </el-row> 
+                    > "evaluation_value": 0.2,
+                </el-row>
                 <el-row style="margin-bottom: 5px;">
-                    >     "log": "数据不通过规则校验 定性为可疑账户"
+                    > "log": "数据不通过规则校验 定性为可疑账户"
                 </el-row>
                 <el-row style="margin-bottom: 5px;">
                     > }
@@ -68,18 +70,11 @@
         </el-dialog>
         <el-dialog :title="'反诈事模版导入 更新于' + updateTime" widht="40%" v-model="isShowTemplate">
             <el-form>
-                <el-form-item 
-                v-for="item in showTemplate" 
-                :label="item.label"
-                :key="item.label">
+                <el-form-item v-for="item in showTemplate" :label="item.label" :key="item.label">
                     <el-button @click="handleConfifmAddTemplate(0)" size="small">添加此模版</el-button>
-                    <el-tag size="small" style="margin-left: 10px;" :type="item.robot ? 'success' : ''">{{ item.robot ? 'AI' : '人工' }}</el-tag>
-                    <el-tooltip
-                        class="box-item"
-                        effect="dark"
-                        :content="item.from.join(' ')"
-                        placement="top"
-                    >
+                    <el-tag size="small" style="margin-left: 10px;" :type="item.robot ? 'success' : ''">{{ item.robot ? 'AI'
+                        : '人工' }}</el-tag>
+                    <el-tooltip class="box-item" effect="dark" :content="item.from.join(' ')" placement="top">
                         <el-button size="small" link type="primary" style="margin-left: 10px;">数据来源</el-button>
                     </el-tooltip>
                 </el-form-item>
@@ -235,10 +230,10 @@ const scheduleRandomExtraction = () => {
     showTemplate.value = getRandomElements(allTemplate.value, 7);
     showTemplate.value.splice(1, 0, allTemplate.value[0])
     timer = setInterval(() => {
-    showTemplate.value = []
-    showTemplate.value = getRandomElements(allTemplate.value, 7);
-    showTemplate.value.splice(1, 0, allTemplate.value[0])
-  }, 10000); // 10秒间隔
+        showTemplate.value = []
+        showTemplate.value = getRandomElements(allTemplate.value, 7);
+        showTemplate.value.splice(1, 0, allTemplate.value[0])
+    }, 10000); // 10秒间隔
 }
 
 onMounted(() => {
@@ -260,7 +255,7 @@ const getEditorRuleContent = async () => {
             ruleId.value = res.data[0].id
             ruleName.value = res.data[0].ruleName
         }
-    } catch {}
+    } catch { }
 }
 
 const handleAddIf = () => {
@@ -272,11 +267,11 @@ const handleDSL = () => {
 }
 
 watch(() => activeNode.value,
-() => {
-    if (activeNode.value && !activeNode.value.isFolder) {
-        getEditorRuleContent()
-    }
-})
+    () => {
+        if (activeNode.value && !activeNode.value.isFolder) {
+            getEditorRuleContent()
+        }
+    })
 
 const getFileTree = async () => {
     try {
@@ -312,8 +307,8 @@ const handleConfirmSave = async () => {
             ruleName.value = ''
             getFileTree()
         }
-    } catch {}
-    
+    } catch { }
+
 }
 
 const handleShowRun = async () => {
@@ -325,11 +320,11 @@ const handleShowRun = async () => {
         if (res.code == 200) {
             consoleData.value = res.data
         }
-    } catch {}
+    } catch { }
     isShowRunDialog.value = true
 }
 
-const handleAddWhile = () => { 
+const handleAddWhile = () => {
     editor.value = [deepCopy(whileItem)]
 }
 
@@ -344,6 +339,106 @@ const handleConfifmAddTemplate = (index) => {
     tIsShow.value = true
 }
 
+const handleOp = () => {
+    editor.value = [
+        {
+            "type": "if",
+            "conditions": [
+                {
+                    "left": {
+                        "libId": "30",
+                        "varName": "dealTime"
+                    },
+                    "operator": ">",
+                    "right": {
+                        "libId": "30",
+                        "varName": "beforeDawnBeginTime[01:24]"
+                    }
+                }
+            ],
+            "body": [
+                {
+                    "type": "print",
+                    "received": {
+                        "libId": "30",
+                        "varName": "dealMoney"
+                    },
+                    "calculate": {
+                        "left": {},
+                        "operator": "",
+                        "right": {}
+                    }
+                },
+                {
+                    "type": "if",
+                    "conditions": [
+                        {
+                            "left": {
+                                "libId": "30",
+                                "varName": "dealMoney"
+                            },
+                            "operator": ">",
+                            "right": {
+                                "libId": "30",
+                                "varName": "beforeDawnMoney[11032]"
+                            }
+                        }
+                    ],
+                    "body": [
+                        {
+                            "type": "calculate",
+                            "received": {
+                                "libId": "30",
+                                "varName": "dealMoney"
+                            },
+                            "calculate": {
+                                "left": {
+                                    "libId": "30",
+                                    "varName": "dealMoney"
+                                },
+                                "operator": "+",
+                                "right": {
+                                    "libId": "30",
+                                    "varName": "anotherDealMoney"
+                                }
+                            }
+                        },
+                        {
+                            "type": "print",
+                            "received": {
+                                "libId": "30",
+                                "varName": "dealMoney"
+                            },
+                            "calculate": {
+                                "left": {},
+                                "operator": "",
+                                "right": {}
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "else",
+            "body": [
+                {
+                    "type": "print",
+                    "received": {
+                        "libId": "30",
+                        "varName": "dealTime"
+                    },
+                    "calculate": {
+                        "left": {},
+                        "operator": "",
+                        "right": {}
+                    }
+                }
+            ]
+        }
+    ]
+}
+
 onMounted(() => {
     getFileTree()
 })
@@ -354,17 +449,21 @@ onMounted(() => {
     width: 100%;
     height: 100%;
     display: flex;
+
     .re-left {
         width: 75%;
         padding-right: 20px;
+
         .re-left-header {
             border-bottom: 1px solid rgb(198, 198, 198);
             padding-bottom: 10px;
         }
+
         .re-left-bodyer {
             padding: 10px;
         }
     }
+
     .re-right {
         width: 25%;
         border-left: 1px solid rgb(217, 217, 217);
