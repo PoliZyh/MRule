@@ -1,7 +1,7 @@
 <template>
   <div class="age-box">
     <div class="title">
-      <p>领域占比</p>
+      <p>启用规则占比</p>
       <img src="../images/dataScreen-title.png" alt="" />
     </div>
     <div class="charts" ref="chartRef"></div>
@@ -17,319 +17,472 @@ import "echarts-gl";
 
 const chartRef = ref()
 
-function getParametricEquation(startRatio, endRatio, isSelected, isHovered, k, h) {
-  // 计算
-  let midRatio = (startRatio + endRatio) / 2;
-
-  let startRadian = startRatio * Math.PI * 2;
-  let endRadian = endRatio * Math.PI * 2;
-  let midRadian = midRatio * Math.PI * 2;
-
-  // 如果只有一个扇形，则不实现选中效果。
-  // if (startRatio === 0 && endRatio === 1) {
-  //     isSelected = false;
-  // }
-  isSelected = false;
-  // 通过扇形内径/外径的值，换算出辅助参数 k（默认值 1/3）
-  k = typeof k !== 'undefined' ? k : 1 / 3;
-
-  // 计算选中效果分别在 x 轴、y 轴方向上的位移（未选中，则位移均为 0）
-  let offsetX = isSelected ? Math.sin(midRadian) * 0.1 : 0;
-  let offsetY = isSelected ? Math.cos(midRadian) * 0.1 : 0;
-
-  // 计算高亮效果的放大比例（未高亮，则比例为 1）
-  let hoverRate = isHovered ? 1.05 : 1;
-
-  // 返回曲面参数方程
+//获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
+function getCirlPoint(x0, y0, r, angle) {
+  let x1 = x0 + r * Math.cos((angle * Math.PI) / 180);
+  let y1 = y0 + r * Math.sin((angle * Math.PI) / 180);
   return {
-    u: {
-      min: -Math.PI,
-      max: Math.PI * 3,
-      step: Math.PI / 32,
-    },
-
-    v: {
-      min: 0,
-      max: Math.PI * 2,
-      step: Math.PI / 20,
-    },
-
-    x: function (u, v) {
-      if (u < startRadian) {
-        return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
-      }
-      if (u > endRadian) {
-        return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
-      }
-      return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate;
-    },
-
-    y: function (u, v) {
-      if (u < startRadian) {
-        return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
-      }
-      if (u > endRadian) {
-        return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
-      }
-      return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate;
-    },
-
-    z: function (u, v) {
-      if (u < -Math.PI * 0.5) {
-        return Math.sin(u);
-      }
-      if (u > Math.PI * 2.5) {
-        return Math.sin(u) * h * 0.1;
-      }
-      return Math.sin(v) > 0 ? 1 * h * 0.1 : -1;
-    },
+    x: x1,
+    y: y1
   };
 }
-
-// 生成模拟 3D 饼图的配置项
-function getPie3D(pieData, internalDiameterRatio) {
-  let series = [];
-  let sumValue = 0;
-  let startValue = 0;
-  let endValue = 0;
-  let legendData = [];
-  let k =
-    typeof internalDiameterRatio !== 'undefined'
-      ? (1 - internalDiameterRatio) / (1 + internalDiameterRatio)
-      : 1 / 3;
-
-  // 为每一个饼图数据，生成一个 series-surface 配置
-  for (let i = 0; i < pieData.length; i++) {
-    sumValue += pieData[i].value;
-
-    let seriesItem = {
-      name: typeof pieData[i].name === 'undefined' ? `series${i}` : pieData[i].name,
-      type: 'surface',
-      parametric: true,
-      wireframe: {
-        show: false,
-      },
-      pieData: pieData[i],
-      pieStatus: {
-        selected: false,
-        hovered: false,
-        k: 1 / 10,
-      },
-    };
-
-    if (typeof pieData[i].itemStyle != 'undefined') {
-      let itemStyle = {};
-
-      typeof pieData[i].itemStyle.color != 'undefined' ? (itemStyle.color = pieData[i].itemStyle.color) : null;
-      typeof pieData[i].itemStyle.opacity != 'undefined'
-        ? (itemStyle.opacity = pieData[i].itemStyle.opacity)
-        : null;
-
-      seriesItem.itemStyle = itemStyle;
+let angle = 0; //角度，用来做简单的动画效果的
+let value = 85;
+let code = '启用规则占比';
+const option = {
+  title: {
+    text: `{primary|${value}}\t{point|%}\n${code}`,
+    left: 'center',
+    top: 'center',
+    textStyle: {
+      rich: {
+        primary: {
+          color: '#fff',
+          fontWeight: 500,
+          fontSize: 48,
+          lineHeight: 67.2
+        },
+        point: {
+          fontSize: 14,
+          lineHeight: 22,
+          color: '#A1A6B1',
+          verticalAlign: 'top',
+          padding: [10, -10, 0, 0]
+        }
+      }
     }
-    series.push(seriesItem);
-  }
-
-  // 使用上一次遍历时，计算出的数据和 sumValue，调用 getParametricEquation 函数，
-  // 向每个 series-surface 传入不同的参数方程 series-surface.parametricEquation，也就是实现每一个扇形。
-  for (let i = 0; i < series.length; i++) {
-    endValue = startValue + series[i].pieData.value;
-
-    series[i].pieData.startRatio = startValue / sumValue;
-    series[i].pieData.endRatio = endValue / sumValue;
-    series[i].parametricEquation = getParametricEquation(
-      series[i].pieData.startRatio,
-      series[i].pieData.endRatio,
-      false,
-      false,
-      k,
-      series[i].pieData.value
-    );
-
-    startValue = endValue;
-
-    legendData.push(series[i].name);
-  }
-
-  // // 补充一个透明的圆环，用于支撑高亮功能的近似实现。
-  series.push({
-    name: 'mouseoutSeries',
-    type: 'surface',
-    parametric: true,
-    wireframe: {
-      show: false,
-    },
-    itemStyle: {
-      opacity: 0.1,
-      color: '#E1E8EC',
-    },
-    parametricEquation: {
-      u: {
-        min: 0,
-        max: Math.PI * 2,
-        step: Math.PI / 20,
-      },
-      v: {
-        min: 0,
-        max: Math.PI,
-        step: Math.PI / 20,
-      },
-      x: function (u, v) {
-        return ((Math.sin(v) * Math.sin(u) + Math.sin(u)) / Math.PI) * 2;
-      },
-      y: function (u, v) {
-        return ((Math.sin(v) * Math.cos(u) + Math.cos(u)) / Math.PI) * 2;
-      },
-      z: function (u, v) {
-        return Math.cos(v) > 0 ? -0.5 : -5;
-      },
-    },
-  });
-
-  // // 补充一个透明的圆环，用于支撑高亮功能的近似实现。
-  series.push({
-    name: 'mouseoutSeries',
-    type: 'surface',
-    parametric: true,
-    wireframe: {
-      show: false,
-    },
-    itemStyle: {
-      opacity: 0.1,
-      color: '#E1E8EC',
-    },
-    parametricEquation: {
-      u: {
-        min: 0,
-        max: Math.PI * 2,
-        step: Math.PI / 20,
-      },
-      v: {
-        min: 0,
-        max: Math.PI,
-        step: Math.PI / 20,
-      },
-      x: function (u, v) {
-        return ((Math.sin(v) * Math.sin(u) + Math.sin(u)) / Math.PI) * 2;
-      },
-      y: function (u, v) {
-        return ((Math.sin(v) * Math.cos(u) + Math.cos(u)) / Math.PI) * 2;
-      },
-      z: function (u, v) {
-        return Math.cos(v) > 0 ? -5 : -7;
-      },
-    },
-  });
-  series.push({
-    name: 'mouseoutSeries',
-    type: 'surface',
-
-    parametric: true,
-    wireframe: {
-      show: false,
-    },
-    itemStyle: {
-      opacity: 0.1,
-      color: '#E1E8EC',
-    },
-    parametricEquation: {
-      u: {
-        min: 0,
-        max: Math.PI * 2,
-        step: Math.PI / 20,
-      },
-      v: {
-        min: 0,
-        max: Math.PI,
-        step: Math.PI / 20,
-      },
-      x: function (u, v) {
-        return ((Math.sin(v) * Math.sin(u) + Math.sin(u)) / Math.PI) * 2.2;
-      },
-      y: function (u, v) {
-        return ((Math.sin(v) * Math.cos(u) + Math.cos(u)) / Math.PI) * 2.2;
-      },
-      z: function (u, v) {
-        return Math.cos(v) > 0 ? -7 : -7;
-      },
-    },
-  });
-
-  // 准备待返回的配置项，把准备好的 legendData、series 传入。
-  let option = {
-    //animation: false,
-
-    legend: {
-      right: '50%',
-      top: 'center',
-      textStyle: {
-        fontSize: 18,
-        color: 'white',
-      },
-      // icon:'diamond',
-      data: legendData,
-      formatter: (params) => {
-        return params;
-      },
-    },
-    xAxis3D: {},
-    yAxis3D: {},
-    zAxis3D: {},
-    grid3D: {
-      viewControl: {
-        autoRotate: true,
-      },
-      left: '20%',
-      width: '100%',
-      show: false,
-      boxHeight: 100,
-    },
-    series: series,
-  };
-  return option;
-}
-
-// 传入数据生成 option
-const option = getPie3D(
-  [
+  },
+  legend: {
+    show: false
+  },
+  series: [
     {
-      name: '金融行业',
-      value: 134,
-      itemStyle: {
-        color: '#99D3F3',
+      name: '分数',
+      type: 'pie',
+      radius: ['60%', '82%'],
+      silent: true,
+      clockwise: true,
+      startAngle: 180,
+      z: 0,
+      zlevel: 0,
+      label: {
+        position: 'center'
       },
+      data: [
+        {
+          value: value,
+          name: '',
+          itemStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                {
+                  offset: 0,
+                  color: '#5FE2FC' // 0% 处的颜色
+                },
+                {
+                  offset: 1,
+                  color: '#0F7EFF' // 100% 处的颜色
+                }
+              ],
+              global: false // 缺省为 false
+            }
+          }
+        },
+        {
+          value: 100 - value,
+          name: '',
+          label: {
+            show: false
+          },
+          itemStyle: {
+            color: '#E6EAF2'
+          }
+        }
+      ]
     },
     {
-      name: '安全领域',
-      value: 56,
-      itemStyle: {
-        color: '#007AFF',
+      name: '分割线',
+      type: 'gauge',
+      radius: '110%',
+      center: ['50%', '50%'],
+      startAngle: 0,
+      endAngle: 360.0,
+      splitNumber: 65,
+      splitLine: {
+        length: 130,
+        lineStyle: {
+          width: 4,
+          color: '#1f1f1f'
+        }
       },
+      // hoverAnimation: true,
+      axisTick: {
+        show: false
+      },
+      // splitLine: {
+      //   length: 30,
+      //   lineStyle: {
+      //     width: 5,
+      //     color: '#fff',
+      //   },
+      // },
+      axisLabel: {
+        show: false
+      },
+      pointer: {
+        show: false
+      },
+      axisLine: {
+        lineStyle: {
+          opacity: 0
+        }
+      },
+      detail: {
+        show: false
+      },
+      data: [
+        {
+          value: 100,
+          name: ''
+        }
+      ]
+    },
+    // {
+    //   name: '背景线',
+    //   type: 'pie',
+    //   silent: true,
+    //   startAngle: 0,
+    //   z: 1,
+    //   clockWise: true,
+    //   hoverAnimation: false,
+    //   radius: ['85%', '100%'],
+    //   center: ['50%', '50%'],
+    //   label: {
+    //     show: false,
+    //   },
+    //   itemStyle: {
+    //     label: {
+    //       show: false,
+    //     },
+    //     labelLine: {
+    //       show: false,
+    //     },
+
+    //     color: '#0b5263',
+    //     borderWidth: 14,
+    //     borderColor: '#fff',
+    //   },
+    //   data: [50, 50, 50, 50],
+    // },
+    // 第1个弧 点-线-点
+    {
+      name: 'ring5', // 上右点
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        let x0 = api.getWidth() / 2;
+        let y0 = api.getHeight() / 2;
+        let r = (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95;
+        let point = getCirlPoint(x0, y0, r, 278 + angle);
+        return {
+          type: 'circle',
+          shape: {
+            cx: point.x,
+            cy: point.y,
+            r: 4
+          },
+          style: {
+            stroke: '#E6EAF2',
+            fill: 'transparent'
+          },
+          silent: true
+        };
+      },
+      data: [0]
     },
     {
-      name: '教育工作者',
-      value: 57,
-      itemStyle: {
-        color: '#2acf81',
+      name: 'ring5',
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        return {
+          type: 'arc',
+          shape: {
+            cx: api.getWidth() / 2,
+            cy: api.getHeight() / 2,
+            r: (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95,
+            startAngle: ((280 + -angle) * Math.PI) / 180,
+            endAngle: ((-10 + -angle) * Math.PI) / 180
+          },
+          style: {
+            stroke: '#E6EAF2',
+            fill: 'transparent',
+            lineWidth: 1
+          },
+          silent: true
+        };
       },
+      data: [0]
     },
     {
-      name: '反诈领域',
-      value: 51,
-      itemStyle: {
-        color: '#1F9AA7',
+      name: 'ring5', // 右上点
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        let x0 = api.getWidth() / 2;
+        let y0 = api.getHeight() / 2;
+        let r = (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95;
+        let point = getCirlPoint(x0, y0, r, -8 + angle);
+        return {
+          type: 'circle',
+          shape: {
+            cx: point.x,
+            cy: point.y,
+            r: 4
+          },
+          style: {
+            stroke: '#E6EAF2', //绿
+            fill: 'transparent'
+          },
+          silent: true
+        };
       },
+      data: [0]
+    },
+    // 第2个弧 点-线-点
+    {
+      name: 'ring5', // 左下点
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        let x0 = api.getWidth() / 2;
+        let y0 = api.getHeight() / 2;
+        let r = (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95;
+        let point = getCirlPoint(x0, y0, r, 8 + angle);
+        return {
+          type: 'circle',
+          shape: {
+            cx: point.x,
+            cy: point.y,
+            r: 4
+          },
+          style: {
+            stroke: '#E6EAF2', //绿
+            fill: 'transparent'
+          },
+          silent: true
+        };
+      },
+      data: [0]
     },
     {
-      name: '开发者',
-      value: 11,
-      itemStyle: {
-        color: '#F5B64C',
+      name: 'ring5', // 线
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        return {
+          type: 'arc',
+          shape: {
+            cx: api.getWidth() / 2,
+            cy: api.getHeight() / 2,
+            r: (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95,
+            startAngle: ((10 + -angle) * Math.PI) / 180,
+            endAngle: ((80 + -angle) * Math.PI) / 180
+          },
+          style: {
+            stroke: '#E6EAF2',
+            fill: 'transparent',
+            lineWidth: 1
+          },
+          silent: true
+        };
       },
+      data: [0]
     },
-  ],
-  0.7
-);
+    {
+      name: 'ring5', // 下右点
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        let x0 = api.getWidth() / 2;
+        let y0 = api.getHeight() / 2;
+        let r = (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95;
+        let point = getCirlPoint(x0, y0, r, 82 + angle);
+        return {
+          type: 'circle',
+          shape: {
+            cx: point.x,
+            cy: point.y,
+            r: 4
+          },
+          style: {
+            stroke: '#E6EAF2', //绿
+            fill: 'transparent'
+          },
+          silent: true
+        };
+      },
+      data: [0]
+    },
+    // 第3个弧 点-线-点
+    {
+      name: 'ring5', // 下左点
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        let x0 = api.getWidth() / 2;
+        let y0 = api.getHeight() / 2;
+        let r = (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95;
+        let point = getCirlPoint(x0, y0, r, 98 + angle);
+        return {
+          type: 'circle',
+          shape: {
+            cx: point.x,
+            cy: point.y,
+            r: 4
+          },
+          style: {
+            stroke: '#E6EAF2',
+            fill: 'transparent'
+          },
+          silent: true
+        };
+      },
+      data: [0]
+    },
+    {
+      name: 'ring5', // 线
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        return {
+          type: 'arc',
+          shape: {
+            cx: api.getWidth() / 2,
+            cy: api.getHeight() / 2,
+            r: (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95,
+            startAngle: ((100 + -angle) * Math.PI) / 180,
+            endAngle: ((170 + -angle) * Math.PI) / 180
+          },
+          style: {
+            stroke: '#E6EAF2',
+            fill: 'transparent',
+            lineWidth: 1
+          },
+          silent: true
+        };
+      },
+      data: [0]
+    },
+    {
+      name: 'ring5', // 左下点
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        let x0 = api.getWidth() / 2;
+        let y0 = api.getHeight() / 2;
+        let r = (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95;
+        let point = getCirlPoint(x0, y0, r, 172 + angle);
+        return {
+          type: 'circle',
+          shape: {
+            cx: point.x,
+            cy: point.y,
+            r: 4
+          },
+          style: {
+            stroke: '#E6EAF2',
+            fill: 'transparent'
+          },
+          silent: true
+        };
+      },
+      data: [0]
+    },
+    // 第4个弧 点-线-点
+    {
+      name: 'ring5', // 左上点
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        let x0 = api.getWidth() / 2;
+        let y0 = api.getHeight() / 2;
+        let r = (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95;
+        let point = getCirlPoint(x0, y0, r, 188 + -angle);
+        return {
+          type: 'circle',
+          shape: {
+            cx: point.x,
+            cy: point.y,
+            r: 4
+          },
+          style: {
+            stroke: '#E6EAF2', //绿
+            fill: 'transparent'
+          },
+          silent: true
+        };
+      },
+      data: [0]
+    },
+    {
+      name: 'ring5', // 线
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        return {
+          type: 'arc',
+          shape: {
+            cx: api.getWidth() / 2,
+            cy: api.getHeight() / 2,
+            r: (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95,
+            startAngle: ((190 + -angle) * Math.PI) / 180,
+            endAngle: ((260 + -angle) * Math.PI) / 180
+          },
+          style: {
+            stroke: '#E6EAF2',
+            fill: 'transparent',
+            lineWidth: 1
+          },
+          silent: true
+        };
+      },
+      data: [0]
+    },
+    {
+      name: 'ring5', // 上左点
+      type: 'custom',
+      coordinateSystem: 'none',
+      renderItem: function (params, api) {
+        let x0 = api.getWidth() / 2;
+        let y0 = api.getHeight() / 2;
+        let r = (Math.min(api.getWidth(), api.getHeight()) / 2) * 0.95;
+        let point = getCirlPoint(x0, y0, r, 262 + -angle);
+        return {
+          type: 'circle',
+          shape: {
+            cx: point.x,
+            cy: point.y,
+            r: 4
+          },
+          style: {
+            stroke: '#E6EAF2', //绿
+            fill: 'transparent'
+          },
+          silent: true
+        };
+      },
+      data: [0]
+    }
+  ]
+};
+
+
 
 onMounted(() => {
   const myCharts = echarts.init(chartRef.value)

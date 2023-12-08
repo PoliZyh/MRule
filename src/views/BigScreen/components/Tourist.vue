@@ -68,7 +68,6 @@ onMounted(() => {
     }
   }
   .number {
-    margin-top: 70px;
     display: flex;
     padding: 10px;
     .num-item {
@@ -83,9 +82,8 @@ onMounted(() => {
     }
   }
   .charts {
-    margin-top: 50px;
     width: 100%;
-    height: 350px;
+    height: 250px;
   }
 }
 </style>

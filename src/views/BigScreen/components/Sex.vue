@@ -244,7 +244,6 @@ series: [
   background: url('../images/dataScreen-main-cb.png') no-repeat;
   background-size: 100% 100%;
   .title {
-      margin-top: 15px;
 
       p {
           margin-left: -20px;
@@ -253,7 +252,7 @@ series: [
       }
   }
   .charts {
-  height: 460px;
+  height: 330px;
   width: 100%;
 }
 }

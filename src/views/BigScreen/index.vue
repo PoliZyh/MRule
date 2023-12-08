@@ -8,6 +8,7 @@
       <div class="bottom">
         <div class="left">
           <Tourist class="tourist"></Tourist>
+          <Work class="age"></Work>
           <Sex class="sex"></Sex>
         </div>
         <div class="center">
@@ -99,7 +100,7 @@ window.onresize = () => {
         display: flex;
         flex-direction: column;
         .tourist {
-          flex: 1.2;
+          flex: 1;
         }
         .sex {
           flex: 1;
